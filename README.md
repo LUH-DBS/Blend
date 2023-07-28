@@ -1,2 +1,2 @@
-# Tequila
-The repository for Tequila, a holistic data discovery system
+# Blend
+The repository for Blend, a holistic data discovery system
