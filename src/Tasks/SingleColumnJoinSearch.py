@@ -5,8 +5,8 @@ from src.Operators.Seekers import SingleColumnOverlap
 
 
 
-def SingleColumnJoinSearch(query_values, k=10, db_name='vertica', main_index_table_name='gittables_main_tokenized'):
-    plan = Plan(db_name, main_index_table_name)
+def SingleColumnJoinSearch(query_values, k=10):
+    plan = Plan()
     input_element = Input(pd.DataFrame(query_values))
     plan.add('input', input_element, [], {})
     element = SingleColumnOverlap(query_values, k)

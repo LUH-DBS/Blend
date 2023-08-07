@@ -4,8 +4,8 @@ from src.Operators.Seekers import MultiColumnOverlap
 
 
 
-def MultiColumnJoinSearch(query_dataset, k=10, db_name='vertica', main_index_table_name='main_tokenized_quadrants'):
-    plan = Plan(db_name, main_index_table_name)
+def MultiColumnJoinSearch(query_dataset, k=10):
+    plan = Plan()
     input_element = Input(query_dataset)
     plan.add('input', input_element, [], {})
     element = MultiColumnOverlap(query_dataset, k)

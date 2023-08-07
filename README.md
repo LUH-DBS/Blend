@@ -34,6 +34,21 @@ dbcon = vertica_python.connect(
         use_prepared_statements=False
 )
 ```
+## Database configuration
+To run, Blend needs a database connection. To configure the database connection you need to create a config file in the `config` folder. The config file must be named `config.ini`. Depending on the DBMS you are using you need to change the config file. Below you can find an example of a config file for Vertica.
+
+```ini
+[Database]
+dbms=vertica
+host=db.example.com
+port=5433
+user=username
+password=password
+dbname=vdb
+
+index_table=blend_index
+```
+
 
 ## Example
 Underneath you can find the examples of the plans used in the paper.

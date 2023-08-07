@@ -6,13 +6,13 @@ import time
 
 
 class Plan(Operator):
-    def __init__(self, db_name='vertica', main_index_table_name='gittables_main_tokenized'):
+    def __init__(self):
         self.input_data = None
         self.k = 10
         self.nodes = {} # Maps node names to their corresponding (operator, params)
         self.adj = {} # Maps node names to their corresponding input node names
         self.execution_plan = []
-        self.DB = DBHandler(db_name, main_index_table_name)
+        self.DB = DBHandler()
         self.node_input_result = {}
 
     def readData(self, path):

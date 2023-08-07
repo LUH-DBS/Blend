@@ -5,8 +5,8 @@ from src.Operators.Seekers import Correlation
 import pandas as pd
 
 
-def CorrelationSearch(source_column, target_column, k=10, db_name='vertica', main_index_table_name='main_tokenized_quadrants'):
-    plan = Plan(db_name, main_index_table_name)
+def CorrelationSearch(source_column, target_column, k=10):
+    plan = Plan()
     input_element = Input(pd.DataFrame({'source_column': source_column, 'target_column': target_column}))
     plan.add('input', input_element, [], {})
     element = Correlation(source_column, target_column, k)
