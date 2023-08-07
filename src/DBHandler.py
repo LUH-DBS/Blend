@@ -10,7 +10,6 @@ class DBHandler(object):
         self.index_table = None
 
         config_path = Path(__file__).parent.parent / 'config' / 'config.ini'
-        print(config_path.absolute())
         self.load_config(config_path)
         
 
