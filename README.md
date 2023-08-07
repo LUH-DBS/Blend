@@ -82,7 +82,7 @@ for processing the data in the main memory. Our goal in Blend
 is to reduce the loading time by moving most of the computation
 into the database to prevent expensive data movement. By doing
 so, we can achieve a runtime efficiency that is comparable to the
-stand-alone state-of-the-art baselines. Table 5 shows the results
+stand-alone state-of-the-art baselines. Table 6 shows the results
 of this experiment. As the union discovery baseline, i.e., Starmie,
 leverages a large language model, this baseline does not use any
 database to store the table values. In this case, the loading time
