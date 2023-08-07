@@ -22,7 +22,7 @@ class DBHandler:
             self.connection = vertica_python.connect(**conn_info)
         if preferred_db == 'postgres':
             CONN_INFO_postgres = {
-                'host': 'db.exam',
+                'host': 'db.example.com',
                 'dbname': 'pdb',
                 'user': 'username',
                 'password': 'password',
