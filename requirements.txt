@@ -1,0 +1,7 @@
+pandas
+numpy
+duckdb==0.7.1
+tqdm
+pyarrow
+psycopg[binary]
+vertica-python
