@@ -1,7 +1,7 @@
 from collections import Counter
 
 
-def calculate_xash(token: str, hash_size: int = 128):
+def calculate_xash(token: str, hash_size: int = 128) -> int:
     """Calculates the XASH hash of a token."""
 
     number_of_ones = 5

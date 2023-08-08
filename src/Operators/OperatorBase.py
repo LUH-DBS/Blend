@@ -1,15 +1,25 @@
-class Operator(object):
-    def __init__(self):
-        self.type = ''
-        self.sql = ''
-        self.base_sql = ''
+from abc import ABC, abstractmethod
 
-    def clean_value_collection(self, values):
-        return [str(v).replace("'", "''").strip() for v in values if str(v).lower() != 'nan']
+# Typing imports
+from src.DBHandler import DBHandler
+from typing import List
 
-    def create_sql_where_condition_from_value_list(self, values):
-        return "'{}'".format("' , '".join(set(values)))
 
-    def create_sql_where_condition_from_numerical_value_list(self, values):
-        values = [str(x) for x in values]
-        return "{}".format(" , ".join(values))
+class Operator(ABC):
+    def __init__(self, k):
+        self.k = k
+
+    def run(self, DB: DBHandler, additionals: str="") -> List[int]:
+        sql = self.create_sql_query(DB, additionals=additionals)
+        result = DB.execute_and_fetchall(sql)
+        self.result = [r[0] for r in result]
+        return self.result
+        
+    @abstractmethod
+    def cost(self) -> int:
+        raise NotImplementedError
+    
+    @abstractmethod
+    def create_sql_query(self, DB: DBHandler, additionals: str="") -> str:
+        raise NotImplementedError
+    

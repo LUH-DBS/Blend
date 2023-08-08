@@ -1,74 +1,64 @@
-from src.Operators.OperatorBase import Operator
+from src.Operators.Seekers.SeekerBase import Seeker
 import numpy as np
 from heapq import heapify, heappush, heappop
 from src.utils import calculate_xash
 
+# Typing imports
+from src.DBHandler import DBHandler
+import pandas as pd
+from typing import List
 
-class MultiColumnOverlap(Operator):
-    def __init__(self, input_df, k=10):
-        Operator.__init__(self)
-        self.type = 'multicolumnintersection'
+class MultiColumnOverlap(Seeker):
+    def __init__(self, input_df: pd.DataFrame, k: int=10):
+        super().__init__(k)
         self.input = input_df
-        self.k = k
-        self.base_sql = ' $INIT$ ' + f'SELECT firstcolumn.TableId, firstcolumn.RowId, firstcolumn.super_key, firstcolumn.CellValue, firstcolumn.ColumnId $OTHER_SELECT_COLUMNS$ FROM (SELECT TableId, RowId, CellValue, ColumnId, TO_BITSTRING(super_key) AS super_key FROM AllTables WHERE CellValue ' \
-                        f'IN ($TOKENS$) $ADDITIONALS$ ) AS firstcolumn $INNERJOINS$'
+        self.base_sql = """
+            SELECT firstcolumn.TableId, firstcolumn.RowId, firstcolumn.superkey, firstcolumn.CellValue, firstcolumn.ColumnId $OTHER_SELECT_COLUMNS$
+            FROM (SELECT TableId, RowId, CellValue, ColumnId, TO_BITSTRING(superkey) AS superkey FROM AllTables WHERE CellValue
+            IN ($TOKENS$) $ADDITIONALS$ ) AS firstcolumn $INNERJOINS$
+        """
 
-    def create_sql_query(self):
-        self.sql = self.base_sql.replace('$TOKENS$', self.create_sql_where_condition_from_value_list(self.clean_value_collection(self.input[self.input.columns.values[0]])))\
+    def create_sql_query(self, DB: DBHandler, additionals: str="") -> str:
+        sql = self.base_sql.replace('$TOKENS$', DB.create_sql_where_condition_from_value_list(DB.clean_value_collection(self.input[self.input.columns.values[0]])))\
             .replace('$TOPK$', f'{self.k}')
 
         innerjoins = ''
-        for column_index in np.arange(1, len(self.input.columns.values)):
+        for column_index in range(1, len(self.input.columns.values)):
             innerjoins += f' INNER JOIN (SELECT TableId, RowId, CellValue, ColumnId FROM AllTables WHERE CellValue ' \
-                          f'IN ({self.create_sql_where_condition_from_value_list(self.clean_value_collection(self.input[self.input.columns.values[column_index]]))}) $ADDITIONALS$ ) clm_{self.input.columns.values[column_index]}   ' \
+                          f'IN ({DB.create_sql_where_condition_from_value_list(DB.clean_value_collection(self.input[self.input.columns.values[column_index]]))}) $ADDITIONALS$ ) clm_{self.input.columns.values[column_index]}   ' \
                           f'ON firstcolumn.TableId = clm_{self.input.columns.values[column_index]}.TableID AND firstcolumn.RowId = clm_{self.input.columns.values[column_index]}.RowId'
-            self.sql = self.sql.replace('$OTHER_SELECT_COLUMNS$',
+            sql = sql.replace('$OTHER_SELECT_COLUMNS$',
                                             f' , clm_{self.input.columns.values[column_index]}.CellValue, clm_{self.input.columns.values[column_index]}.ColumnId $OTHER_SELECT_COLUMNS$ ')
         
-        self.sql = self.sql.replace('$INNERJOINS$', innerjoins).replace('$HAVING$', '').replace('$INIT$', '').replace('$ADDITIONALS$', '').replace('$OTHER_SELECT_COLUMNS$', '')
+        sql = sql.replace('$INNERJOINS$', innerjoins).replace('$ADDITIONALS$', additionals).replace('$OTHER_SELECT_COLUMNS$', '')
 
-    def optimize(self, by, set_operation_type, create_executatable_query = False): # by, is an operator that we would like to optimize the sql based on
-        linear = False  # If False means that the optimization merged the nodes and we don't need to linearly connect them together
-        if set_operation_type == 'set_intersection':
-            if by.type == 'intersection':
-                by.create_sql_query()
-                self.base_sql = self.base_sql.replace('$ADDITIONALS$', f' AND TableId IN ($PREVIOUSSTEP_MUST$) $ADDITIONALS$')
-                self.k = min(self.k, by.k)
-                linear = True
-            elif by.type == 'multicolumnintersection':
-                by.create_sql_query()
-                self.base_sql = self.base_sql.replace('$ADDITIONALS$', f' AND TableId IN ($PREVIOUSSTEP_MUST$) $ADDITIONALS$') # Also try if the first one is run and only the table ids are sent
-                linear = True
-            elif by.type == 'quadrantapproximation':
-                by.optimize(self, set_operation_type, False)
-        elif set_operation_type == 'set_union':
-            if by.type == 'intersection':
-                by.create_sql_query()
-                self.base_sql = self.base_sql.replace('$INIT$', f' $INIT$ {by.sql} UNION DISTINCT ')
-                self.k = self.k + by.k
-            elif by.type == 'multicolumnintersection':
-                by.create_sql_query()
-                self.base_sql = self.base_sql.replace('$INIT$', f' $INIT$ {by.sql} UNION DISTINCT ')
-                self.k = self.k + by.k
-            elif by.type == 'quadrantapproximation':
-                self.base_sql = by.optimize(self, set_operation_type, False).base_sql
-        elif set_operation_type == 'set_difference':
-            if by.type == 'intersection':
-                by.create_sql_query()
-                self.base_sql = self.base_sql.replace('$ADDITIONALS$', f' AND TableId NOT IN ($PREVIOUSSTEP_MUST$) $ADDITIONALS$')
-            elif by.type == 'multicolumnintersection':
-                by.create_sql_query()
-                self.base_sql = self.base_sql.replace('$ADDITIONALS$', f' AND TableId NOT IN ($PREVIOUSSTEP_MUST$) $ADDITIONALS$')
-            elif by.type == 'quadrantapproximation':
-                by.create_sql_query()
-                self.base_sql = self.base_sql.replace('$ADDITIONALS$', f' AND TableId NOT IN ($PREVIOUSSTEP_MUST$) $ADDITIONALS$')
-            linear = True
-        if create_executatable_query:
-            self.create_sql_query()
-        return linear
+
+        PLs = DB.execute_and_fetchall(sql)
+        results = self.run_filter(PLs, DB)
+
+        # Since we need an sql query we need to put the result into a subquery
+        if len(results) == 0:
+            return "SELECT TableId FROM AllTables WHERE 1=0"
+        
+        sql = f"""
+            SELECT TableId FROM (
+        """
+        for i, result in enumerate(results):
+            sql += f"SELECT {result} AS TableId"
+            if i < len(results) - 1:
+                sql += " UNION ALL "
+        sql += f"""
+            ) AS {DB.random_subquery_name()}
+        """
+
+        return sql
+
     
+    def cost(self) -> int:
+        return 6
 
-    def run(self, PLs, DB):
+
+    def run_filter(self, PLs: List, DB: DBHandler) -> List[int]:
         PL_dictionary = {}
         PL_candidate_structure = {}
         for tablerow_superkey in PLs:
@@ -150,7 +140,7 @@ class MultiColumnOverlap(Operator):
             query = 'SELECT CONCAT(CONCAT(TableId, \'_\'), RowId), ColumnId, CellValue FROM (SELECT * from AllTables WHERE TableId in (\'{}\') and RowId in (\'{}\')) AS intermediate WHERE CONCAT(CONCAT(TableId, \'_\'), RowId) IN (\'{}\');'.format(
                 joint_distinct_tableids, joint_distinct_rows, joint_distinct_values)
 
-            pls_to_evaluate, execution_time, fetch_time = DB.execute_and_fetchall(query)
+            pls_to_evaluate = DB.execute_and_fetchall(query)
             table_row_dict = {}  # contains rowid that each rowid has dict that maps colids to tokenized
             for i in pls_to_evaluate:
                 if i[0] not in table_row_dict:
@@ -186,10 +176,10 @@ class MultiColumnOverlap(Operator):
                             heappush(top_joinable_tables, [joinability_score, tbl, join_keys])
                     else:
                         heappush(top_joinable_tables, [joinability_score, tbl, join_keys])
-        print(f'All: {all_pls}, approaved:{total_approved}, match:{total_match}')
-        return [(tableid, ) for _, tableid, _ in top_joinable_tables[::-1]]
+        
+        return [tableid for _, tableid, _ in top_joinable_tables[::-1]]
 
-    def hash_row_vals(self, row):
+    def hash_row_vals(self, row: List[any]) -> int:
         hresult = 0
         for q in row:
             hvalue = calculate_xash(str(q))
@@ -211,4 +201,3 @@ class MultiColumnOverlap(Operator):
                     if val == input_row[q_index]:
                         matching_column_order += '_{}'.format(str(colid))
         return True, matching_column_order
-    

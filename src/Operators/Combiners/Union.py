@@ -1,9 +1,25 @@
-from src.Operators.OperatorBase import Operator
+from src.Operators.Combiners.CombinerBase import Combiner
+
+# Typing imports
+from src.DBHandler import DBHandler
+
+class Union(Combiner):
+    def __init__(self, k: int=10):
+        super().__init__(k)
 
 
-class Union(Operator):
-    def __init__(self, k=10):
-        Operator.__init__(self)
-        self.type = 'set_union'
-        self.input = []
-        self.k = k
+    def create_sql_query(self, DB: DBHandler, additionals: str="") -> str:
+        sql = """
+        (
+        """
+        for i, input in enumerate(self.inputs):
+            sql += input.create_sql_query(DB, additionals=additionals)
+            sql += ")"
+            if i < len(self.inputs) - 1:
+                sql += " UNION "
+                sql += "("
+        sql += f"""
+        LIMIT {self.k}
+        """
+
+        return sql

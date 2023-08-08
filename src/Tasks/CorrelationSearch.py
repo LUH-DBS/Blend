@@ -8,10 +8,10 @@ import pandas as pd
 def CorrelationSearch(source_column, target_column, k=10):
     plan = Plan()
     input_element = Input(pd.DataFrame({'source_column': source_column, 'target_column': target_column}))
-    plan.add('input', input_element, [], {})
+    plan.add('input', input_element, [])
     element = Correlation(source_column, target_column, k)
-    plan.add('query', element, ['input'], {})
-    plan.add('terminal', Terminal(), ['query'], {})
+    plan.add('query', element, ['input'])
+    plan.add('terminal', Terminal(), ['query'])
     return plan
 
 

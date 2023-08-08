@@ -8,8 +8,8 @@ from src.Operators.Seekers import Keyword
 def KeywordSearch(query_values, k=10):
     plan = Plan()
     input_element = Input(pd.DataFrame(query_values))
-    plan.add('input', input_element, [], {})
+    plan.add('input', input_element, [])
     element = Keyword(query_values, k)
-    plan.add('query', element, ['input'], {})
-    plan.add('terminal', Terminal(), ['query'], {})
+    plan.add('query', element, ['input'])
+    plan.add('terminal', Terminal(), ['query'])
     return plan

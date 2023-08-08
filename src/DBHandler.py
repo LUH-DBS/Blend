@@ -1,4 +1,4 @@
-import time
+import random
 import configparser
 from pathlib import Path
 
@@ -67,21 +67,28 @@ class DBHandler(object):
         return "'{}'".format("' , '".join(set(values)))
 
     def clean_query(self, query):
-        return query.replace('AllTables_quadrants', f'{self.index_table}_quadrants').replace('AllTables', f'{self.index_table}')\
-            .replace('TableId', 'tableid').replace('ColumnId', 'colid').replace('RowId', 'rowid')\
-            .replace('CellValue', 'tokenized').replace('Quadrants', 'quadrants_webtables').replace('QDR', 'quadrant')\
-            .replace('COCOA', 'order_index').replace('MATE', 'MATE_index')
+        return query.replace('AllTables', f'{self.index_table}')
 
     def execute_and_fetchall(self, query):
         """Returns results, execution time, and fetch time"""
         query = self.clean_query(query)
 
-        start_time = time.time()
         self.cursor.execute(query)
-        execution_time = time.time() - start_time
-        start_time = time.time()
         results = self.cursor.fetchall()
-        fetch_time = time.time() - start_time
-        return results, execution_time, fetch_time
+        return results
+    
+
+    def clean_value_collection(self, values):
+        return [str(v).replace("'", "''").strip() for v in values if str(v).lower() != 'nan']
+
+    def create_sql_where_condition_from_value_list(self, values):
+        return "'{}'".format("' , '".join(set(values)))
+
+    def create_sql_where_condition_from_numerical_value_list(self, values):
+        values = [str(x) for x in values]
+        return "{}".format(" , ".join(values))
+    
+    def random_subquery_name(self):
+        return f"subquery{random.random()*1000000:.0f}"
 
     
