@@ -6,43 +6,8 @@ def calculate_xash(token: str, hash_size: int = 128) -> int:
 
     number_of_ones = 5
     char = [
-        " ",
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z",
+        " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i",
+        "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
     ]
 
     segment_size_dict = {64: 1, 128: 3, 256: 6, 512: 13}
@@ -53,7 +18,7 @@ def calculate_xash(token: str, hash_size: int = 128) -> int:
     n_bits_for_length = hash_size - length_bit_start
     token_size = len(token)
 
-    ## Character position encoding
+    # - Character position encoding
     result = 0
     # Pick the 5 most infrequent characters
     counts = Counter(token).items()
@@ -83,7 +48,7 @@ def calculate_xash(token: str, hash_size: int = 128) -> int:
 
     result = (left_bits | wrapped_bits) % cut_overlapping_bits
 
-    ## Add length bit
+    # - Add length bit
     length_bit = 1 << (length_bit_start + token_size % n_bits_for_length)
     result = result | length_bit
 

@@ -10,7 +10,7 @@ from numbers import Number
 
 class Correlation(Seeker):
 
-    def __init__(self, source_values: List[str], target_values: List[Number], k: int=10) -> None:
+    def __init__(self, source_values: List[str], target_values: List[Number], k: int = 10) -> None:
         super().__init__(k)
 
         grouped = pd.DataFrame({'source': source_values, 'target': target_values}).dropna().groupby('source').mean()
@@ -31,7 +31,8 @@ class Correlation(Seeker):
                         sum(numerical.Quadrant::int) / count(*) > 0.5 as Quadrant,
                         count(distinct numerical.CellValue) as num_unique,
                         min(numerical.CellValue) as any_cellvalue
-                    FROM (SELECT * FROM AllTables WHERE rowid < 256 AND (CellValue IN ($FALSETOKENS$) OR CellValue IN ($TRUETOKENS$)) $ADDITIONALS$) categorical
+                    FROM (SELECT * FROM AllTables WHERE rowid < 256 AND (CellValue IN ($FALSETOKENS$)
+                                                        OR CellValue IN ($TRUETOKENS$)) $ADDITIONALS$) categorical
                     JOIN (SELECT * FROM AllTables WHERE rowid < 256 AND Quadrant is not NULL $ADDITIONALS$) numerical
                         ON categorical.TableId = numerical.TableId AND categorical.RowId = numerical.RowId
                     GROUP BY categorical.TableId, categorical.ColumnId, numerical.ColumnId, categorical.CellValue
@@ -44,15 +45,15 @@ class Correlation(Seeker):
         ) inner_union
         """
 
-    def create_sql_query(self, DB: DBHandler, additionals: str="") -> str:
+    def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         self.input_target = self.input_target.astype(float)
         target_average = np.mean(self.input_target)
         target_int = np.where(self.input_target >= target_average, 1, 0)
         target_int = target_int.astype(int)
-        self.input_source = DB.clean_value_collection(self.input_source)
-        source_0 = DB.create_sql_where_condition_from_value_list(
+        self.input_source = db.clean_value_collection(self.input_source)
+        source_0 = db.create_sql_list_str(
             [key for key, qdr in zip(self.input_source, target_int) if qdr == 0])
-        source_1 = DB.create_sql_where_condition_from_value_list(
+        source_1 = db.create_sql_list_str(
             [key for key, qdr in zip(self.input_source, target_int) if qdr == 1])
         
         sql = self.base_sql.replace("$TOPK$", f"{self.k}")

@@ -1,7 +1,11 @@
 from src.Plan import Plan
 from src.Operators import Terminal, Input, Combiners, Seekers
 
-def UnionSearch(dataset, k=10):
+# typing imports
+import pandas as pd
+
+
+def UnionSearch(dataset: pd.DataFrame, k: int = 10) -> Plan:
     plan = Plan()
     input_element = Input(dataset)
     plan.add('input', input_element)

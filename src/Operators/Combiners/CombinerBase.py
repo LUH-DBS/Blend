@@ -1,7 +1,9 @@
 from src.Operators.OperatorBase import Operator
 from typing import List, Optional
+from abc import ABC
 
-class Combiner(Operator):
+
+class Combiner(Operator, ABC):
     def __init__(self, k: int) -> None:
         super().__init__(k)
         self.inputs: Optional[List[Operator]] = None
@@ -12,6 +14,4 @@ class Combiner(Operator):
         self.inputs = inputs.copy()
 
     def cost(self) -> int:
-        return sum(input.cost() for input in self.inputs)
-    
-
+        return sum(input_.cost() for input_ in self.inputs)

@@ -8,8 +8,9 @@ from src.DBHandler import DBHandler
 import pandas as pd
 from typing import List
 
+
 class MultiColumnOverlap(Seeker):
-    def __init__(self, input_df: pd.DataFrame, k: int=10):
+    def __init__(self, input_df: pd.DataFrame, k: int = 10):
         super().__init__(k)
         self.input = input_df
         self.base_sql = """
@@ -18,14 +19,14 @@ class MultiColumnOverlap(Seeker):
             IN ($TOKENS$) $ADDITIONALS$ ) AS firstcolumn $INNERJOINS$
         """
 
-    def create_sql_query(self, DB: DBHandler, additionals: str="") -> str:
-        sql = self.base_sql.replace('$TOKENS$', DB.create_sql_where_condition_from_value_list(DB.clean_value_collection(self.input[self.input.columns.values[0]])))\
+    def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
+        sql = self.base_sql.replace('$TOKENS$', db.create_sql_list_str(db.clean_value_collection(self.input[self.input.columns.values[0]])))\
             .replace('$TOPK$', f'{self.k}')
 
         innerjoins = ''
         for column_index in range(1, len(self.input.columns.values)):
             innerjoins += f' INNER JOIN (SELECT TableId, RowId, CellValue, ColumnId FROM AllTables WHERE CellValue ' \
-                          f'IN ({DB.create_sql_where_condition_from_value_list(DB.clean_value_collection(self.input[self.input.columns.values[column_index]]))}) $ADDITIONALS$ ) clm_{self.input.columns.values[column_index]}   ' \
+                          f'IN ({db.create_sql_list_str(db.clean_value_collection(self.input[self.input.columns.values[column_index]]))}) $ADDITIONALS$ ) clm_{self.input.columns.values[column_index]}   ' \
                           f'ON firstcolumn.TableId = clm_{self.input.columns.values[column_index]}.TableID AND firstcolumn.RowId = clm_{self.input.columns.values[column_index]}.RowId'
             sql = sql.replace('$OTHER_SELECT_COLUMNS$',
                                             f' , clm_{self.input.columns.values[column_index]}.CellValue, clm_{self.input.columns.values[column_index]}.ColumnId $OTHER_SELECT_COLUMNS$ ')
@@ -33,8 +34,8 @@ class MultiColumnOverlap(Seeker):
         sql = sql.replace('$INNERJOINS$', innerjoins).replace('$ADDITIONALS$', additionals).replace('$OTHER_SELECT_COLUMNS$', '')
 
 
-        PLs = DB.execute_and_fetchall(sql)
-        results = self.run_filter(PLs, DB)
+        PLs = db.execute_and_fetchall(sql)
+        results = self.run_filter(PLs, db)
 
         # Since we need an sql query we need to put the result into a subquery
         if len(results) == 0:
@@ -48,7 +49,7 @@ class MultiColumnOverlap(Seeker):
             if i < len(results) - 1:
                 sql += " UNION ALL "
         sql += f"""
-            ) AS {DB.random_subquery_name()}
+            ) AS {db.random_subquery_name()}
         """
 
         return sql
@@ -58,7 +59,7 @@ class MultiColumnOverlap(Seeker):
         return 6
 
 
-    def run_filter(self, PLs: List, DB: DBHandler) -> List[int]:
+    def run_filter(self, PLs: List, db: DBHandler) -> List[int]:
         PL_dictionary = {}
         PL_candidate_structure = {}
         for tablerow_superkey in PLs:
@@ -140,7 +141,7 @@ class MultiColumnOverlap(Seeker):
             query = 'SELECT CONCAT(CONCAT(TableId, \'_\'), RowId), ColumnId, CellValue FROM (SELECT * from AllTables WHERE TableId in (\'{}\') and RowId in (\'{}\')) AS intermediate WHERE CONCAT(CONCAT(TableId, \'_\'), RowId) IN (\'{}\');'.format(
                 joint_distinct_tableids, joint_distinct_rows, joint_distinct_values)
 
-            pls_to_evaluate = DB.execute_and_fetchall(query)
+            pls_to_evaluate = db.execute_and_fetchall(query)
             table_row_dict = {}  # contains rowid that each rowid has dict that maps colids to tokenized
             for i in pls_to_evaluate:
                 if i[0] not in table_row_dict:

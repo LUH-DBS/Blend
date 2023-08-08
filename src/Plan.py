@@ -1,17 +1,21 @@
 from src.DBHandler import DBHandler
-from src.Operators import Operator, Seeker, Combiner, Input, Terminal
-from typing import List, Iterable
+from src.Operators import Operator, Combiner, Terminal
+
+# Typing imports
+from typing import List, Iterable, Optional
+
 
 class Plan(object):
     def __init__(self) -> None:
         self.DB = DBHandler()
         self.operators = dict()
         self.combiners: List[Combiner] = []
-        self.terminal: Terminal = None
+        self.terminal: Optional[Terminal] = None
 
-    def add(self, name: str, operator: Operator, inputs: Iterable[str] = []) -> None:
+    def add(self, name: str, operator: Operator, inputs: Iterable[str] = None) -> None:
         """Add an operator to the plan."""
-        
+        if inputs is None:
+            inputs = []
         inputs = list(inputs)
 
         # Check if operator is valid
@@ -21,11 +25,14 @@ class Plan(object):
         self.operators[name] = operator
 
         if isinstance(operator, Combiner):
-            combiner : Combiner = operator
+            combiner: Combiner = operator
             try:
                 input_operators = [self.operators[input_name] for input_name in inputs]
             except KeyError as e:
-                raise KeyError(f'Operator {name} has an invalid input: {e}. Please add the input operator before adding the combiner.')
+                raise KeyError(
+                    f'Operator {name} has an invalid input: {e}. '
+                    f'Please add the input operator before adding the combiner.'
+                )
             
             combiner.set_inputs(input_operators)
             self.combiners.append(combiner)
@@ -36,7 +43,6 @@ class Plan(object):
                 raise ValueError(f'Terminal {name} must have exactly one input.')
             
             self.terminal.set_input(self.operators[inputs[0]])
-
 
     def run(self) -> List[int]:
         """Run the plan."""
