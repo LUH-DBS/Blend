@@ -84,7 +84,8 @@ aug = CreateAugmentationPlan(df[['E1', 'E2']], df['Q'])
 aug.run()
 ```
 
-## Additional experiments
+## Experiments
+### Additional experiments
 
 ![Runtime break down experiment](images/runtime_breakdown.png)
 
@@ -116,3 +117,6 @@ posting lists, depending on the number of candidate tables, require
 additional fetching time. However, the SQL query used in Blend
 reduces the number of candidate tables, therefore, it reduces the
 loading overhead from 68.2% in MATE to 14.3%.
+
+### Queries
+Due to the size of the queries used in the paper, we are not able to provide them in this repository. However, you can message us and we will provide you with the queries if you want to reproduce the results.
