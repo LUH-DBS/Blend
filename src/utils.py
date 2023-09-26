@@ -53,3 +53,55 @@ def calculate_xash(token: str, hash_size: int = 128) -> int:
     result = result | length_bit
 
     return result
+
+
+from  pathlib import Path
+import pandas as pd
+import numpy as np
+
+
+class Logger(object):
+    def __init__(self, logging_path='logs/', clear_logs=False):
+        self.logging_path = Path(logging_path)
+        self.logging_path.mkdir(parents=True, exist_ok=True)
+
+        print("Logger using path: ", self.logging_path.absolute(), end='\n\n')
+        self.used_logs = dict()
+        self.clear_logs = clear_logs
+
+    def _open_log(self, logname):
+        if logname in self.used_logs:
+            return
+        
+        fp = self.logging_path / f"{logname}.csv"
+        if not fp.exists():
+            self.used_logs[logname] = pd.DataFrame()
+        else:
+            self.used_logs[logname] = pd.read_csv(fp, sep=',')
+
+    def log(self, logname, data):
+        if logname not in self.used_logs:
+            if self.clear_logs:
+                self.used_logs[logname] = pd.DataFrame(columns=data.keys())
+            else:
+                self._open_log(logname)
+            
+        self.used_logs[logname] = pd.concat([self.used_logs[logname], pd.DataFrame(data, index=[0])], ignore_index=True)
+        self.used_logs[logname].to_csv(self.logging_path / f"{logname}.csv", sep=',', index=False)
+
+    def read_average_log(self, logname, metric_to_read, k):
+        self._open_log(logname)
+        df = self.used_logs[logname]
+        df = df[df['k'] == k]
+        vals = df[metric_to_read]
+
+        print(vals.describe())
+
+    def describe_log(self, logname, k):
+        self._open_log(logname)
+        df = self.used_logs[logname]
+        df = df[df['k'] == k]
+
+        print(df.describe())
+
+

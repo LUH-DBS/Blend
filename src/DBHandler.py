@@ -68,6 +68,9 @@ class DBHandler(object):
     def execute_and_fetchall(self, query: str) -> List[Union[Tuple, List]]:
         """Returns results"""
         query = self.clean_query(query)
+        # Temporary fix
+        query = query.replace('CellValue', 'tokenized').replace("superkey", "super_key").replace("ColumnId", "colid")
+
         self.cursor.execute(query)
         results = self.cursor.fetchall()
 

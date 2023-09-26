@@ -1,6 +1,9 @@
 # Custom
 groups
 config.ini
+vertica.ini
+postgres.ini
+logs/
 .idea/
 
 # Byte-compiled / optimized / DLL files
