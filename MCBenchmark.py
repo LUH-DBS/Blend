@@ -10,7 +10,7 @@ def run(config_name):
     config = configparser.ConfigParser()
     config.read(f'data/benchmarks/MC/{config_name}.ini')
 
-    logger = Logger()
+    logger = Logger(clear_logs=True)
     log_name_template = config["Benchmark"]["log_name"]
     
     k = int(config["Benchmark"]["k"].strip())

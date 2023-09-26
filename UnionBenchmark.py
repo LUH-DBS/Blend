@@ -21,7 +21,7 @@ def run(config_name):
         print("Running for k = ", k)
         log_name = log_name_template.format(k)
         for query_id, query_path in tqdm(list(enumerate(sorted(query_paths)))):
-            query = pd.read_csv(path + "/" + query_path, sep=",")
+            query = pd.read_csv(path + "/" + query_path, sep=",").apply(lambda x: x.astype(str).str.lower())
             task = UnionSearch(query, k)
             task.DB.load_config(config["Benchmark"]["database_config"])
             task.DB.index_table = config["Benchmark"]["index_table"]
@@ -46,4 +46,4 @@ def run(config_name):
                     
 
 if __name__ == '__main__':
-    run("Santos_Large_Vertica")
+    run("TUS_Small_Vertica")
