@@ -10,7 +10,7 @@ def UnionSearch(dataset: pd.DataFrame, k: int = 10) -> Plan:
     input_element = Input(dataset)
     plan.add('input', input_element)
     for clm_name in dataset.columns:
-        element = Seekers.SC(dataset[clm_name], k)
+        element = Seekers.SC(dataset[clm_name], k * 10)
         plan.add(clm_name, element, ['input'])
     plan.add('counter', Combiners.Counter(k), dataset.columns)
     plan.add('terminal', Terminal(), ['counter'])

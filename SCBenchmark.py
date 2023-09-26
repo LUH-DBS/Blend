@@ -27,7 +27,7 @@ def run(config_name):
                 continue
             print("Running for k = ", k, " and query set size = ", query_set_size, "...")
             log_name = log_name_template.format(query_set_size, k)
-            for query_id, query in tqdm(list(enumerate(queries))):
+            for query_id, query in tqdm(list(enumerate(sorted(queries)))):
                 if config.has_option("Benchmark", "column_agnostic") and config["Benchmark"]["column_agnostic"].lower() == "true":
                     task = KeywordSearch(query, k)
                 else:

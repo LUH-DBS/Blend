@@ -25,6 +25,7 @@ class DBHandler(object):
         config.read(config_path)
 
         dbms = config['Database']['dbms'].lower()
+        self.dbms = dbms
         if dbms == 'vertica':
             import vertica_python
             self.connection = vertica_python.connect(
@@ -71,6 +72,9 @@ class DBHandler(object):
         """Returns results"""
         query = self.clean_query(query)
         # Temporary fix
+        if self.dbms == 'postgres':
+            query = query.replace('TO_BITSTRING(superkey)', f'superkey')
+        query.replace('TO_BITSTRING(superkey)', f'superkey')
         query = query.replace('CellValue', 'tokenized').replace("superkey", "super_key").replace("ColumnId", "colid")
 
         self.cursor.execute(query)
