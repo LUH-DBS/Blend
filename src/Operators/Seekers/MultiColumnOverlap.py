@@ -33,7 +33,7 @@ class MultiColumnOverlap(Seeker):
         innerjoins = ''
         for column_index in range(1, len(self.input.columns.values)):
             column_values = self.input[self.input.columns.values[column_index]]
-            column_name = self.input.columns.values[column_index]
+            column_name = db.random_subquery_name()
 
             innerjoins += f"""
                 INNER JOIN
