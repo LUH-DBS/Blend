@@ -22,7 +22,7 @@ def run(config_name):
         with open(path, 'rb') as f:
             queries = pickle.load(f)
         for k in ks:
-            if query_set_size != query_set_size[0] and k != k[0]:
+            if query_set_size != query_set_size[0] and k != ks[0]:
                 # Skipping higher ks for higher query set sizes
                 continue
             print("Running for k = ", k, " and query set size = ", query_set_size, "...")
