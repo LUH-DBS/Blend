@@ -114,6 +114,9 @@ class MultiColumnOverlap(Seeker):
         max_table_check = 10000000
         for tableid in sorted(PL_dictionary, key=lambda k: len(PL_dictionary[k]), reverse=True)[:max_table_check]:
             checked_tables += 1
+            if checked_tables == max_table_check:
+                # pruned = True
+                break
             set_of_rowids = set()
             hitting_PLs = PL_dictionary[tableid]
             if len(top_joinable_tables) >= self.k and top_joinable_tables[0][0] >= len(hitting_PLs):
