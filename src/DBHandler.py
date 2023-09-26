@@ -14,6 +14,8 @@ class DBHandler(object):
         self.index_table = None
 
         config_path = Path(__file__).parent.parent / 'config' / 'config.ini'
+        if not config_path.exists():
+            raise FileNotFoundError(f"Config file not found at {config_path}")
         self.load_config(config_path)
 
     def load_config(self, config_path: Path) -> None:

@@ -97,10 +97,9 @@ class Logger(object):
 
         print(vals.describe())
 
-    def describe_log(self, logname, k):
+    def describe_log(self, logname):
         self._open_log(logname)
         df = self.used_logs[logname]
-        df = df[df['k'] == k]
 
         print(df.describe())
 

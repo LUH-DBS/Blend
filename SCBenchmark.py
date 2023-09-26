@@ -10,7 +10,7 @@ def run(config_name):
     config = configparser.ConfigParser()
     config.read(f'data/benchmarks/SC/{config_name}.ini')
 
-    logger = Logger()
+    logger = Logger(clear_logs=True)
     log_name_template = config["Benchmark"]["log_name"]
     
     ks = config["Benchmark"]["ks"].strip().split()
@@ -22,6 +22,9 @@ def run(config_name):
         with open(path, 'rb') as f:
             queries = pickle.load(f)
         for k in ks:
+            if query_set_size != query_set_size[0] and k != k[0]:
+                # Skipping higher ks for higher query set sizes
+                continue
             print("Running for k = ", k, " and query set size = ", query_set_size, "...")
             log_name = log_name_template.format(query_set_size, k)
             for query_id, query in tqdm(list(enumerate(queries))):
@@ -50,4 +53,4 @@ def run(config_name):
                         
 
 if __name__ == '__main__':
-    run("SC_Opendata_Vertica")
+    run("Opendata_Postgres")
