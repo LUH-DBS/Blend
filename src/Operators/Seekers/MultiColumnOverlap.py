@@ -13,7 +13,7 @@ from typing import List
 class MultiColumnOverlap(Seeker):
     def __init__(self, input_df: pd.DataFrame, k: int = 10) -> None:
         super().__init__(k)
-        self.input = input_df
+        self.input = input_df.copy()
         self.base_sql = """
             SELECT firstcolumn.TableId, firstcolumn.RowId, firstcolumn.superkey, firstcolumn.CellValue,
                     firstcolumn.ColumnId $OTHER_SELECT_COLUMNS$

@@ -1,6 +1,7 @@
 import random
 import configparser
 from pathlib import Path
+import pandas as pd
 
 # Typing imports
 from typing import List, Union, Tuple, Iterable
@@ -81,6 +82,23 @@ class DBHandler(object):
         results = self.cursor.fetchall()
 
         return results
+    
+    def get_table_from_index(self, table_id: int) -> pd.DataFrame:
+        sql = f"""
+        SELECT CellValue, ColumnId, RowId
+        FROM AllTables
+        WHERE TableId = {table_id}
+        """
+
+        results = self.execute_and_fetchall(sql)
+
+        df = pd.DataFrame(results, columns=['CellValue', 'ColumnId', 'RowId'])
+        df = df.pivot(index='RowId', columns='ColumnId', values='CellValue')
+        df.index.name = None
+        df.columns.name = None
+
+        return df
+
     
     @staticmethod
     def clean_value_collection(values: Iterable[any]) -> List[str]:
