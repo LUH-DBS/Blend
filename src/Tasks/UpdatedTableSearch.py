@@ -7,7 +7,7 @@ from typing import List
 import pandas as pd
 
 
-def FeatureForMLSearch(old_column_1: List[str], old_column_2: List[str], new_column_1: List[str], new_column_2: List[str], k: int = 10) -> Plan:
+def UpdatedTableSearch(old_column_1: List[str], old_column_2: List[str], new_column_1: List[str], new_column_2: List[str], k: int = 10) -> Plan:
     plan = Plan()
     df = pd.DataFrame({'old_column_1': old_column_1, 'old_column_2': old_column_2, 'new_column_1': new_column_1, 'new_column_2': new_column_2})
     input_element = Input(df)

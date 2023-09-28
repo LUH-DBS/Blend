@@ -58,12 +58,10 @@ def get_precision_and_recall(discovered_mapping: pd.DataFrame, ground_truth: pd.
     
 
     # Find precision and recall
-    print(ground_truth.iloc[:, 0].unique().size)
     correct = count_intersection(discovered_mapping, ground_truth)
     found_inputs = discovered_mapping.iloc[:, 0].unique().size
     precision = correct / found_inputs
     recall = correct / len(ground_truth)
-    print(correct, found_inputs, len(ground_truth))
 
     if correct == 0:
         raise ValueError("No correct results found but there should at least be one!")
@@ -97,7 +95,11 @@ def run(config_name: str) -> None:
         task.DB.index_table = config["Benchmark"]["index_table"]
 
         start = time.time()
-        results = task.run()
+        try:
+            results = task.run()
+        except Exception as e:
+            print(e)
+            continue
         time_to_result = time.time() - start
 
         partial_mappings = []
