@@ -16,6 +16,8 @@ result_ids = [73618111] # , 140502337, 10977367, 10977367, 10977367, 15400287, 1
 results = []
 
 for result_id in result_ids:
+    print(task.DB.get_table_from_index(result_id))
+    exit(0)
     results.append(task.DB.get_table_from_index(result_id))
 
 for result in results:
