@@ -86,6 +86,12 @@ def run(config_name: str) -> None:
     
     print("Running for k = ", k)
     for query_id, query_path in tqdm(list(enumerate(sorted(query_folder.glob('*'))))):
+        skip = True
+        for whiteitem in ['PoundsToKg', 'AthletesHoldingWorldRecordsPerCountry', 'CountryToAreaSqKM', 'ZipToCity', 'CountryToThreeLettersISOCode', 'CountryToLanguage', 'EnglishToGerman', 'City2TallBuildings', 'SoccerPlayer2NationalTeam', 'CityToZIp', 'TeamToManager', 'WorldRecordToAthlete', 'CompanyToCeo', 'shoesizeUSEUR', 'StateToAbbrv', 'fahrenheitToCelcius', 'CUSIPToCompanyName', 'airportToCountry', 'CountryToTwoLettersISOCode', 'USStandardToMetric', 'CityToCountry', 'SymbolToCompanyName', 'Country2UnescoSites', 'RegionToAreaCode_Single', 'USDQAR', 'MountainsOver7k2Range', 'Author2Novels', 'MountainsOver7k2meters', 'Driver2Champioships', 'CompanyToIndustry', 'TeamToCoach', 'BankToSwiftCode', 'RGBToColor', 'ZipToState']:
+            if whiteitem in query_path.stem:
+                skip = False
+        if skip:
+            continue
         query = pd.read_csv(query_path)
         ground_truth = pd.read_csv(ground_truth_folder / query_path.name).apply(lambda x: x.astype(str).str.lower()).reset_index(drop=True)
         examples = query[query.iloc[:, 1].notnull()].apply(lambda x: x.astype(str).str.lower()).reset_index(drop=True)
