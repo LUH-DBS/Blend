@@ -15,7 +15,7 @@ result_ids = task.run()
 # result_ids = [73618111] # , 140502337, 10977367, 10977367, 10977367, 15400287, 140502336, 10977367, 73618056, 59921649]
 results = []
 print(result_ids)
-
+exit(0)
 for result_id in result_ids:
     results.append(task.DB.get_table_from_index(result_id))
 
