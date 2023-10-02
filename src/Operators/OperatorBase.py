@@ -12,7 +12,7 @@ class Operator(ABC):
     def run(self, db: DBHandler, additionals: str = "") -> List[int]:
         sql = self.create_sql_query(db, additionals=additionals)
         result = db.execute_and_fetchall(sql)
-        return [r[0] for r in result]
+        return [r[0] for r in result[:self.k]]
         
     @abstractmethod
     def cost(self) -> int:

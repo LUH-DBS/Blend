@@ -11,8 +11,8 @@ query[2] = pd.to_numeric(query[2], errors='coerce')
 
 task = FeatureForMLSearch(query, 0, 1, 2, 10)
 
-# result_ids = task.run()
-result_ids = [73618139] # , 73618111, 140502337, 10977367, 10977367, 10977367, 15400287, 140502336, 10977367, 73618056, 59921649]
+result_ids = task.run()
+# result_ids = [73618111] # , 140502337, 10977367, 10977367, 10977367, 15400287, 140502336, 10977367, 73618056, 59921649]
 results = []
 # print(result_ids)
 # exit(0)
