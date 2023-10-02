@@ -96,7 +96,7 @@ class MultiColumnOverlap(Seeker):
 
         # Get all rows grouped by first token of each row
         g = self.input.groupby([self.input.columns.values[0]])
-        gd = {}
+        gd = defaultdict(list)
         for key, item in g:
             gd[str(key[0])] = g.get_group(key[0]).values
 
