@@ -12,8 +12,8 @@ def UpdatedTableSearch(old_column_1: List[str], old_column_2: List[str], new_col
     df = pd.DataFrame({'old_column_1': old_column_1, 'old_column_2': old_column_2, 'new_column_1': new_column_1, 'new_column_2': new_column_2})
     input_element = Input(df)
     plan.add('input', input_element, [])
-    element_new = MultiColumnOverlap(df[['new_column_1', 'new_column_2']], k)
-    element_old = MultiColumnOverlap(df[['old_column_1', 'old_column_2']], k)
+    element_new = MultiColumnOverlap(df[['new_column_1', 'new_column_2']], k*10)
+    element_old = MultiColumnOverlap(df[['old_column_1', 'old_column_2']], k*100)
     plan.add('query_new', element_new, ['input'])
     plan.add('query_old', element_old, ['input'])
 

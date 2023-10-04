@@ -1,4 +1,4 @@
-from src.Tasks.UpdatedTableSearch import UpdatedTableSearch
+from src.Tasks.NegativeExampleSearch import UpdatedTableSearch
 
 import pandas as pd
 from pathlib import Path
