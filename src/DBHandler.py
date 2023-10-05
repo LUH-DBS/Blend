@@ -98,6 +98,28 @@ class DBHandler(object):
         df.columns.name = None
 
         return df
+    
+    def table_ids_to_sql(self, table_ids: Iterable[int]) -> str:
+        if self.dbms == 'postgres':
+            return f"""
+            SELECT * FROM
+            (VALUES {' ,'.join([f"({table_id})" for table_id in table_ids])}
+            AS {DBHandler.random_subquery_name()}(TableId)
+            """
+        elif self.dbms == 'vertica':
+            return f"""
+            SELECT TableId
+            FROM (
+                SELECT Explode(Array[{', '.join(f"{table_id}" for table_id in table_ids)}])
+                OVER (Partition Best) AS (Index_In_Array, TableId)
+            ) {DBHandler.random_subquery_name()}
+            """
+        
+        return f"""
+            SELECT TableId FROM (
+            {' UNION ALL '.join([f'SELECT {table_id} AS TableId' for table_id in table_ids])}
+            ) AS {DBHandler.random_subquery_name()}
+        """
 
     
     @staticmethod

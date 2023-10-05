@@ -60,11 +60,7 @@ class MultiColumnOverlap(Seeker):
         if len(results) == 0:
             return "SELECT TableId FROM AllTables WHERE 1=0"
         
-        sql = f"""
-            SELECT TableId FROM (
-            {' UNION ALL '.join([f'SELECT {result} AS TableId' for result in results])}
-            ) AS {db.random_subquery_name()}
-        """
+        sql = db.table_ids_to_sql(results)
 
         return sql
 
