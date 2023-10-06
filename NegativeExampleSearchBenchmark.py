@@ -7,17 +7,22 @@ import pandas as pd
 from pathlib import Path
 
 
-data_dir = Path('data/benchmarks/NegativeExampleSearch/data/webtable_benchmark/10/')
+# data_dir = Path('data/benchmarks/NegativeExampleSearch/data/santos/')
 runtime = []
-for input_query_path in glob.glob('data/benchmarks/NegativeExampleSearch/data/webtable_benchmark/10/72097009*.csv'):
+TPs = []
+total_table_count = []
+precisions = []
+for counter in np.arange(0, 803):
 
-    all = pd.read_csv(input_query_path).apply(lambda x: x.astype(str).str.lower())
-    if len(all) < 4:
-        continue
-    inclusive_row_numbers = math.ceil(len(all)/2)
-    exclusive_row_numbers = math.floor(len(all)/2)
-    inclusive_rows = all.head(inclusive_row_numbers)
-    exclusive_rows = all.tail(exclusive_row_numbers)
+    # all = pd.read_csv(input_query_path).apply(lambda x: x.astype(str).str.lower())
+    # if len(all) < 4:
+    #     continue
+    # inclusive_row_numbers = math.ceil(len(all)/2)
+    # exclusive_row_numbers = math.floor(len(all)/2)
+    # inclusive_rows = all.head(inclusive_row_numbers)
+    # exclusive_rows = all.tail(exclusive_row_numbers)
+    inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv')
+    exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv')
 
     task = NegativeExampleSearch(inclusive_rows, inclusive_rows.columns.values[0], inclusive_rows.columns.values[1], exclusive_rows, exclusive_rows.columns.values[0], exclusive_rows.columns.values[1], k=10)
     start_time = time.time()
@@ -43,9 +48,14 @@ for input_query_path in glob.glob('data/benchmarks/NegativeExampleSearch/data/we
                    break;
         if flag:
             TP += 1
+    TPs += [TP]
+    total_table_count += [len(results)]
     print('-------------------------')
-    print(input_query_path)
+    print(counter)
     print(TP, len(results))
+    if len(results) > 0:
+        precisions += [TP/len(results)]
+print(f'FINAL PRECISION (AVERAGE): {np.mean(precisions)}')
 
 
 
