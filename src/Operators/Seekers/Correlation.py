@@ -16,6 +16,7 @@ class Correlation(Seeker):
         grouped = pd.DataFrame({'source': source_values, 'target': target_values}).dropna().groupby('source').mean()
         self.input_source = grouped.index.values
         self.input_target = grouped['target'].values
+        self.hash_size = 256
 
         self.base_sql = f"""
         SELECT TableId
@@ -31,9 +32,9 @@ class Correlation(Seeker):
                         sum(numerical.Quadrant::int) / count(*) > 0.5 as Quadrant,
                         count(distinct numerical.CellValue) as num_unique,
                         min(numerical.CellValue) as any_cellvalue
-                    FROM (SELECT * FROM AllTables WHERE rowid < 256 AND (CellValue IN ($FALSETOKENS$)
+                    FROM (SELECT * FROM AllTables WHERE rowid < {self.hash_size} AND (CellValue IN ($FALSETOKENS$)
                                                         OR CellValue IN ($TRUETOKENS$)) $ADDITIONALS$) categorical
-                    JOIN (SELECT * FROM AllTables WHERE rowid < 256 AND Quadrant is not NULL $ADDITIONALS$) numerical
+                    JOIN (SELECT * FROM AllTables WHERE rowid < {self.hash_size} AND Quadrant is not NULL $ADDITIONALS$) numerical
                         ON categorical.TableId = numerical.TableId AND categorical.RowId = numerical.RowId
                     GROUP BY categorical.TableId, categorical.ColumnId, numerical.ColumnId, categorical.CellValue
                 ) grouped_cellvalues

@@ -4,15 +4,46 @@ import numpy as np
 from src.Tasks.NegativeExampleSearch import NegativeExampleSearch
 import glob
 import pandas as pd
+from tqdm import tqdm
 from pathlib import Path
 
 
+def validate(candidate_table, exclusive_rows):
+    exclusive_values = exclusive_rows.values
+    candidate_columns_0 = []
+    candidate_columns_1 = []
+
+    candidate_column_sets = dict()
+    exclusive_column_sets = dict()
+
+    for column in candidate_table.columns:
+        candidate_column_sets[column] = set(candidate_table[column].values)
+
+    for i, column in enumerate(exclusive_rows.columns):
+        exclusive_column_sets[i] = set(exclusive_rows[column].values)
+
+    for column in candidate_column_sets:
+        if exclusive_column_sets[0].intersection(candidate_column_sets[column]):
+            candidate_columns_0.append(column)
+        if exclusive_column_sets[1].intersection(candidate_column_sets[column]):
+            candidate_columns_1.append(column)
+
+    from itertools import product
+    tuples_exclusive = set(exclusive_rows.itertuples(index=False, name=None))
+    for column_0, column_1 in product(candidate_columns_0, candidate_columns_1):
+        if column_0 == column_1:
+            continue
+        tuples_candidate = set(candidate_table[[column_0, column_1]].itertuples(index=False, name=None))
+        if len(tuples_candidate.intersection(tuples_exclusive)) > 0:
+            return False
+
+    return True
 # data_dir = Path('data/benchmarks/NegativeExampleSearch/data/santos/')
 runtime = []
 TPs = []
 total_table_count = []
 precisions = []
-for counter in np.arange(0, 803):
+for counter in tqdm(np.arange(0, 803)):
     inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
     exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
 
@@ -28,16 +59,9 @@ for counter in np.arange(0, 803):
         # print(results[-1])
 
     # Validation phase
-
     TP = 0
     for candidate_table in results:
-        exclusive_values = exclusive_rows.values
-        flag = True
-        for exclusive_value_pair in exclusive_values:
-            for candidate_row in candidate_table.values:
-                if np.isin(exclusive_value_pair, candidate_row).all():
-                   flag = False
-                   break;
+        flag = validate(candidate_table, exclusive_rows)
         if flag:
             TP += 1
     TPs += [TP]
@@ -48,6 +72,6 @@ for counter in np.arange(0, 803):
     if len(results) > 0:
         precisions += [TP/len(results)]
 print(f'FINAL PRECISION (AVERAGE): {np.mean(precisions)}')
-
+print(np.mean(runtime))
 
 

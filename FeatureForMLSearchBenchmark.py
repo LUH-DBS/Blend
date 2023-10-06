@@ -1,13 +1,13 @@
 import glob
 import time
-
+from tqdm import tqdm
 from src.Tasks.FeatureForMLSearch import FeatureForMLSearch
 import pandas as pd
 from collections import Counter
 import numpy as np
 
 runtime = []
-for input_query_path in glob.glob('data/benchmarks/FeatureForMLSearch/data/*.csv'):
+for input_query_path in tqdm(glob.glob('data/benchmarks/FeatureForMLSearch/data/*.csv')):
     query = pd.read_csv(input_query_path)
     input_column_names = query.columns.values
     query = query[[input_column_names[0], input_column_names[1], input_column_names[2]]].apply(lambda x: x.astype(str).str.lower())
@@ -15,17 +15,10 @@ for input_query_path in glob.glob('data/benchmarks/FeatureForMLSearch/data/*.csv
     query[1] = pd.to_numeric(query[1], errors='coerce')
     query[2] = pd.to_numeric(query[2], errors='coerce')
 
-# query = pd.read_csv('data/benchmarks/FeatureForMLSearch/data/world_happiness.csv')
-# query = query[["Country or region", "Score", "Generosity"]].apply(lambda x: x.astype(str).str.lower())
-# query.columns = [0, 1, 2]
-# query[1] = pd.to_numeric(query[1], errors='coerce')
-# query[2] = pd.to_numeric(query[2], errors='coerce')
-
     task = FeatureForMLSearch(query, 0, 1, 2, 10)
     start_time = time.time()
     result_ids = task.run()
     runtime += [time.time()-start_time]
-    # result_ids = [73618111] # , 73618111, 140502337, 10977367, 10977367, 10977367, 15400287, 140502336, 10977367, 73618056, 59921649]
     results = []
     for result_id in result_ids:
         results.append(task.DB.get_table_from_index(result_id))
