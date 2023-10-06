@@ -12,8 +12,8 @@ def NegativeExampleSearch(inclusive_df: pd.DataFrame, inclusive_column_name_1: s
     # df = pd.DataFrame({'inclusive_column_1': inclusive_column_1, 'inclusive_column_2': inclusive_column_2, 'exclusive_column_1': exclusive_column_1, 'exclusive_column_2': exclusive_column_2})
     input_element = Input(inclusive_df)
     plan.add('input', input_element, [])
-    element_exclusive = MultiColumnOverlap(exclusive_df[[exclusive_column_name_1, exclusive_column_name_2]], k*100)
-    element_inclusive = MultiColumnOverlap(inclusive_df[[inclusive_column_name_1, inclusive_column_name_2]], k*10)
+    element_exclusive = MultiColumnOverlap(exclusive_df[[exclusive_column_name_1, exclusive_column_name_2]], k*4)
+    element_inclusive = MultiColumnOverlap(inclusive_df[[inclusive_column_name_1, inclusive_column_name_2]], k*2)
     plan.add('query_exclusive', element_exclusive, ['input'])
     plan.add('query_inclusive', element_inclusive, ['input'])
 

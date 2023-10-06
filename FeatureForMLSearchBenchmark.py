@@ -21,7 +21,6 @@ for input_query_path in glob.glob('data/benchmarks/FeatureForMLSearch/data/*.csv
 # query[1] = pd.to_numeric(query[1], errors='coerce')
 # query[2] = pd.to_numeric(query[2], errors='coerce')
 
-
     task = FeatureForMLSearch(query, 0, 1, 2, 10)
     start_time = time.time()
     result_ids = task.run()

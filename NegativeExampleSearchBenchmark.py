@@ -13,16 +13,8 @@ TPs = []
 total_table_count = []
 precisions = []
 for counter in np.arange(0, 803):
-
-    # all = pd.read_csv(input_query_path).apply(lambda x: x.astype(str).str.lower())
-    # if len(all) < 4:
-    #     continue
-    # inclusive_row_numbers = math.ceil(len(all)/2)
-    # exclusive_row_numbers = math.floor(len(all)/2)
-    # inclusive_rows = all.head(inclusive_row_numbers)
-    # exclusive_rows = all.tail(exclusive_row_numbers)
-    inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv')
-    exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv')
+    inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
+    exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
 
     task = NegativeExampleSearch(inclusive_rows, inclusive_rows.columns.values[0], inclusive_rows.columns.values[1], exclusive_rows, exclusive_rows.columns.values[0], exclusive_rows.columns.values[1], k=10)
     start_time = time.time()
