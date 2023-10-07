@@ -6,7 +6,7 @@ import glob
 import pandas as pd
 from tqdm import tqdm
 from pathlib import Path
-
+from src.utils import Logger
 
 def validate(candidate_table, exclusive_rows):
     exclusive_values = exclusive_rows.values
@@ -39,6 +39,10 @@ def validate(candidate_table, exclusive_rows):
 
     return True
 # data_dir = Path('data/benchmarks/NegativeExampleSearch/data/santos/')
+
+
+logger = Logger(clear_logs=True)
+log_name = 'NegativeExampleLogs'
 runtime = []
 TPs = []
 total_table_count = []
@@ -67,6 +71,11 @@ for counter in tqdm(np.arange(0, 803)):
     TPs += [TP]
     total_table_count += [len(results)]
     print('-------------------------')
+    logger.log(log_name, {
+        "query_id": counter,
+        "precision": TP/len(results),
+        "time": runtime[-1],
+    })
     print(counter)
     print(TP, len(results))
     if len(results) > 0:
