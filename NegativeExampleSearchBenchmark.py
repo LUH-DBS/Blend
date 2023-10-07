@@ -48,39 +48,42 @@ TPs = []
 total_table_count = []
 precisions = []
 for counter in tqdm(np.arange(81, 803)):
-    inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
-    exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
+    try:
+        inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
+        exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
 
-    task = NegativeExampleSearch(inclusive_rows, inclusive_rows.columns.values[0], inclusive_rows.columns.values[1], exclusive_rows, exclusive_rows.columns.values[0], exclusive_rows.columns.values[1], k=10)
-    start_time = time.time()
-    result_ids = task.run()
-    runtime += [time.time() - start_time]
-    # print(result_ids)
+        task = NegativeExampleSearch(inclusive_rows, inclusive_rows.columns.values[0], inclusive_rows.columns.values[1], exclusive_rows, exclusive_rows.columns.values[0], exclusive_rows.columns.values[1], k=10)
+        start_time = time.time()
+        result_ids = task.run()
+        runtime += [time.time() - start_time]
+        # print(result_ids)
 
-    results = []
-    for result_id in result_ids:
-        results.append(task.DB.get_table_from_index(result_id))
-        # print(results[-1])
+        results = []
+        for result_id in result_ids:
+            results.append(task.DB.get_table_from_index(result_id))
+            # print(results[-1])
 
-    # Validation phase
-    TP = 0
-    for candidate_table in results:
-        flag = validate(candidate_table, exclusive_rows)
-        if flag:
-            TP += 1
-    TPs += [TP]
-    total_table_count += [len(results)]
-    print('-------------------------')
-    if len(results) > 0:
-        logger.log(log_name, {
-            "query_id": counter,
-            "precision": TP/len(results),
-            "time": runtime[-1],
-        })
-    print(counter)
-    print(TP, len(results))
-    if len(results) > 0:
-        precisions += [TP/len(results)]
+        # Validation phase
+        TP = 0
+        for candidate_table in results:
+            flag = validate(candidate_table, exclusive_rows)
+            if flag:
+                TP += 1
+        TPs += [TP]
+        total_table_count += [len(results)]
+        print('-------------------------')
+        if len(results) > 0:
+            logger.log(log_name, {
+                "query_id": counter,
+                "precision": TP/len(results),
+                "time": runtime[-1],
+            })
+        print(counter)
+        print(TP, len(results))
+        if len(results) > 0:
+            precisions += [TP/len(results)]
+    except:
+        continue
 print(f'FINAL PRECISION (AVERAGE): {np.mean(precisions)}')
 print(np.mean(runtime))
 
