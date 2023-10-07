@@ -71,11 +71,12 @@ for counter in tqdm(np.arange(0, 803)):
     TPs += [TP]
     total_table_count += [len(results)]
     print('-------------------------')
-    logger.log(log_name, {
-        "query_id": counter,
-        "precision": TP/len(results),
-        "time": runtime[-1],
-    })
+    if len(results) > 0:
+        logger.log(log_name, {
+            "query_id": counter,
+            "precision": TP/len(results),
+            "time": runtime[-1],
+        })
     print(counter)
     print(TP, len(results))
     if len(results) > 0:
