@@ -41,7 +41,7 @@ def validate(candidate_table, exclusive_rows):
 # data_dir = Path('data/benchmarks/NegativeExampleSearch/data/santos/')
 
 
-logger = Logger(clear_logs=True)
+logger = Logger(clear_logs=False)
 log_name = 'NegativeExampleLogs'
 runtime = []
 TPs = []
