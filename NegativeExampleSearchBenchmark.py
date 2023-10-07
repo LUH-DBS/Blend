@@ -47,7 +47,7 @@ runtime = []
 TPs = []
 total_table_count = []
 precisions = []
-for counter in tqdm(np.arange(314, 803)):
+for counter in tqdm(np.arange(341, 803)):
     try:
         inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
         exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
