@@ -16,7 +16,7 @@ class Correlation(Seeker):
         grouped = pd.DataFrame({'source': source_values, 'target': target_values}).dropna().groupby('source').mean()
         self.input_source = grouped.index.values
         self.input_target = grouped['target'].values
-        self.hash_size = 10
+        self.hash_size = 5
 
         self.base_sql = f"""
         SELECT TableId
