@@ -8,7 +8,7 @@ import numpy as np
 
 runtime = []
 for input_query_path in tqdm(glob.glob('data/benchmarks/FeatureForMLSearch/data/*.csv')):
-    query = pd.read_csv(input_query_path).head(100)
+    query = pd.read_csv(input_query_path)
     input_column_names = query.columns.values
     query = query[[input_column_names[0], input_column_names[1], input_column_names[2]]].apply(lambda x: x.astype(str).str.lower())
     query.columns = [0, 1, 2]
