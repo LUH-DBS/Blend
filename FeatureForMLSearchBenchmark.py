@@ -7,6 +7,7 @@ from collections import Counter
 import numpy as np
 
 runtime = []
+precision = []
 for input_query_path in tqdm(glob.glob('data/benchmarks/FeatureForMLSearch/data/*.csv')):
     query = pd.read_csv(input_query_path)
     input_column_names = query.columns.values
@@ -71,5 +72,8 @@ for input_query_path in tqdm(glob.glob('data/benchmarks/FeatureForMLSearch/data/
     for i in np.arange(len(correlating_column_values_to_target)):
         boolean_list += [correlating_column_values_to_target[i] >= correlating_column_values_to_feature[i]]
     print(f'{np.mean(np.array(boolean_list))} % of {len(correlating_column_values_to_target)} tables', )
+    if str(np.mean(np.array(boolean_list))) != 'nan':
+        precision += [np.mean(np.array(boolean_list))]
 print(f'Average Runtime: {np.mean(runtime)}')
+print(f'Average Precision: {np.mean(precision)}')
 
