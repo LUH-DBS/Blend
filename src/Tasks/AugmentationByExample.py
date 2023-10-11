@@ -12,7 +12,7 @@ def AugmentationByExample(examples: pd.DataFrame, queries: Iterable[str], k: int
     plan.add('input', inputs)
     examples_seeker = Seekers.MC(examples, k * 10)
     plan.add('example', examples_seeker, ['input'])
-    query_seeker = Seekers.SC(queries, k * 100)
+    query_seeker = Seekers.SC(queries, k * 50)
     plan.add('query', query_seeker, ['input'])
     plan.add('combiner', Combiners.Intersection(k), ['example', 'query'])
     plan.add('terminal', Terminal(), ['combiner'])
