@@ -92,6 +92,10 @@ def run(config_name: str) -> None:
                 skip = False
         if skip:
             continue
+
+        if 'CompanyToCeo' not in query_path.stem:
+            continue
+
         query = pd.read_csv(query_path)
         ground_truth = pd.read_csv(ground_truth_folder / query_path.name).apply(lambda x: x.astype(str).str.lower()).reset_index(drop=True)
         examples = query[query.iloc[:, 1].notnull()].apply(lambda x: x.astype(str).str.lower()).reset_index(drop=True)
@@ -119,6 +123,13 @@ def run(config_name: str) -> None:
             precision, recall = get_precision_and_recall(found_mapping, ground_truth)
         else:
             precision, recall = 0, 0
+
+        print('-------------------------------------------------')
+        print('-------------------------------------------------')
+        print(query_path)
+        print(results)
+        print(recall)
+        print('-------------------------------------------------')
         
         task.DB.close()
         
