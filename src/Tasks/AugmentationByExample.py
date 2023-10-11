@@ -10,7 +10,7 @@ def AugmentationByExample(examples: pd.DataFrame, queries: Iterable[str], k: int
     plan = Plan()
     inputs = Input([examples, queries])
     plan.add('input', inputs)
-    examples_seeker = Seekers.MC(examples, k * 10)
+    examples_seeker = Seekers.MC(examples, k * 100)
     plan.add('example', examples_seeker, ['input'])
     query_seeker = Seekers.SC(queries, k * 10000)
     plan.add('query', query_seeker, ['input'])
