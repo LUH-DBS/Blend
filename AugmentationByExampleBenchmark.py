@@ -93,8 +93,8 @@ def run(config_name: str) -> None:
         if skip:
             continue
 
-        if 'CompanyToCeo' not in query_path.stem:
-            continue
+        # if 'CompanyToCeo' not in query_path.stem:
+        #     continue
 
         query = pd.read_csv(query_path)
         ground_truth = pd.read_csv(ground_truth_folder / query_path.name).apply(lambda x: x.astype(str).str.lower()).reset_index(drop=True)
@@ -124,12 +124,12 @@ def run(config_name: str) -> None:
         else:
             precision, recall = 0, 0
 
-        print('-------------------------------------------------')
-        print('-------------------------------------------------')
-        print(query_path)
-        print(results)
-        print(recall)
-        print('-------------------------------------------------')
+        # print('-------------------------------------------------')
+        # print('-------------------------------------------------')
+        # print(query_path)
+        # print(results)
+        # print(recall)
+        # print('-------------------------------------------------')
         
         task.DB.close()
         
