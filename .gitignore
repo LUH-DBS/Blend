@@ -2,6 +2,7 @@
 groups
 config.ini
 vertica.ini
+vertica_example.ini
 postgres.ini
 logs/
 .idea/
