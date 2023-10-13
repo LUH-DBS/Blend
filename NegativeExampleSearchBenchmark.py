@@ -47,11 +47,12 @@ runtime = []
 TPs = []
 total_table_count = []
 precisions = []
+negative_example_size = []
 for counter in tqdm(np.arange(0, 803)):
     try:
         inclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/inclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
         exclusive_rows = pd.read_csv(f'data/benchmarks/NegativeExampleSearch/data/santos/exclusive_{counter}.csv').apply(lambda x: x.astype(str).str.lower())
-
+        negative_example_size += [len(exclusive_rows)]
         task = NegativeExampleSearch(inclusive_rows, inclusive_rows.columns.values[0], inclusive_rows.columns.values[1], exclusive_rows, exclusive_rows.columns.values[0], exclusive_rows.columns.values[1], k=10)
         start_time = time.time()
         result_ids = task.run()
@@ -86,5 +87,6 @@ for counter in tqdm(np.arange(0, 803)):
         continue
 print(f'FINAL PRECISION (AVERAGE): {np.mean(precisions)}')
 print(np.mean(runtime))
+print(f'average negative size{np.mean(negative_example_size)}')
 
 
