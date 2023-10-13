@@ -13,6 +13,7 @@ class Difference(Combiner):
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         minus_results = self.inputs[1].run(db, additionals=additionals)
         additionals += f" AND TableId NOT IN ({db.create_sql_list_numeric(minus_results)}) " if minus_results else ""
+        self.inputs[0].k = self.k
         sql = self.inputs[0].create_sql_query(db, additionals=additionals)
 
         return sql

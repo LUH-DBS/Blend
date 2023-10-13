@@ -1,5 +1,8 @@
 from collections import Counter
-
+from  pathlib import Path
+import pandas as pd
+from collections import defaultdict
+import numpy as np
 
 def calculate_xash(token: str, hash_size: int = 128) -> int:
     """Calculates the XASH hash of a token."""
@@ -55,9 +58,37 @@ def calculate_xash(token: str, hash_size: int = 128) -> int:
     return result
 
 
-from  pathlib import Path
-import pandas as pd
-import numpy as np
+
+def df_to_index(df: pd.DataFrame) -> pd.DataFrame:
+    tableid = int(df.columns.name)
+
+    numeric_cols = df.select_dtypes(include='number').columns
+    numeric_cols = [df.columns.get_loc(col) for col in numeric_cols]
+    
+    file_content = df.values
+    number_of_rows = file_content.shape[0]
+    number_of_cols = file_content.shape[1]
+    
+
+    superkeys = defaultdict(int)
+    new_data = []
+    for col_counter in range(number_of_cols):
+        is_numeric_col = col_counter in numeric_cols
+        if is_numeric_col:
+            mean = df.iloc[:, col_counter].mean()
+        for row_counter in range(number_of_rows):
+            tokenized = str(file_content[row_counter][col_counter]).lower().replace('\\', '').replace('\'', '').replace('\"', '').replace('\t', '').replace('\n', '').replace('\r', '')[:200]
+            if tokenized == 'nan' or tokenized == 'none':
+                tokenized = ''
+            quadrant = file_content[row_counter][col_counter] >= mean if is_numeric_col else None
+            new_data.append((tokenized, tableid, col_counter, row_counter, quadrant))
+            superkeys[row_counter] = superkeys[row_counter] | calculate_xash(str(tokenized))
+    
+
+    superkeys_as_binary = {key: f"0x{superkey:032x}" for key, superkey in superkeys.items()}
+    new_data = [(x[0], x[1], x[2], x[3], superkeys_as_binary[x[3]], x[4]) for x in new_data]
+
+    return pd.DataFrame(new_data, columns=['CellValue', 'TableId', 'ColumnId', 'RowId', 'SuperKey', 'Quadrant'])
 
 
 class Logger(object):
