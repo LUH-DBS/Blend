@@ -29,13 +29,13 @@ def get_cleaned_text(text):
 def main():
     k = 10
     logger = Logger(clear_logs=True)
-    query_path = 'data/benchmarks/DataImputation/1*/*.csv'
+    query_path = 'data/benchmarks/DataImputation/gittables_benchmark/*.csv'
 
-    print('--------------------- Multi Column Join Search ----------------------------')
+
     counter = 0
-    for file_path in tqdm(list(glob(query_path))):
+    for file_path in tqdm(list(sorted(glob(query_path)))):
         counter += 1
-        df = pd.read_csv(file_path, header=None)
+        df = pd.read_csv(file_path, header=None).astype(str)
         if len(df) > 5:
             example_df = df.head(5).iloc[:, : 2]
             query_values = df.iloc[5:, :][df.columns.values[0]]
@@ -53,7 +53,7 @@ def main():
 
 
         task = DataImputation(example_df, query_values, k=k)
-        task.DB.index_table = 'main_tokenized_quadrants'
+        task.DB.index_table = 'gittables_main_tokenized'
         start = time.time()
         result_ids = task.run()
         end = time.time()
@@ -65,6 +65,7 @@ def main():
                 runtime=end - start,
                 result_ids=str(result_ids),
                 result_size=len(result_ids),
+                query_path=file_path,
             )
         )
 
