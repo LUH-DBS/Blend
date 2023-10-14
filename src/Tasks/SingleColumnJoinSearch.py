@@ -4,12 +4,12 @@ from src.Operators import Terminal, Input
 from src.Operators.Seekers import SingleColumnOverlap
 
 # typing imports
-from typing import List
+from typing import Iterable
 
 
-def SingleColumnJoinSearch(query_values: List[any], k: int = 10) -> Plan:
+def SingleColumnJoinSearch(query_values: Iterable[any], k: int = 10) -> Plan:
     plan = Plan()
-    input_element = Input(pd.DataFrame(query_values))
+    input_element = Input(pd.DataFrame(list(query_values)))
     plan.add('input', input_element, [])
     element = SingleColumnOverlap(query_values, k)
     plan.add('query', element, ['input'])

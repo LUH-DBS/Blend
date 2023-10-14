@@ -1,5 +1,6 @@
 from src.Operators.Seekers.SeekerBase import Seeker
 import numpy as np
+from collections import defaultdict
 from heapq import heapify, heappush, heappop
 from src.utils import calculate_xash
 
@@ -10,47 +11,56 @@ from typing import List
 
 
 class MultiColumnOverlap(Seeker):
-    def __init__(self, input_df: pd.DataFrame, k: int = 10):
+    def __init__(self, input_df: pd.DataFrame, k: int = 10) -> None:
         super().__init__(k)
-        self.input = input_df
+        self.input = input_df.copy()
         self.base_sql = """
-            SELECT firstcolumn.TableId, firstcolumn.RowId, firstcolumn.superkey, firstcolumn.CellValue, firstcolumn.ColumnId $OTHER_SELECT_COLUMNS$
-            FROM (SELECT TableId, RowId, CellValue, ColumnId, TO_BITSTRING(superkey) AS superkey FROM AllTables WHERE CellValue
-            IN ($TOKENS$) $ADDITIONALS$ ) AS firstcolumn $INNERJOINS$
+            SELECT firstcolumn.TableId, firstcolumn.RowId, firstcolumn.superkey, firstcolumn.CellValue,
+                    firstcolumn.ColumnId $OTHER_SELECT_COLUMNS$
+            FROM (
+                SELECT TableId, RowId, CellValue, ColumnId, TO_BITSTRING(superkey) AS superkey
+                FROM AllTables
+                WHERE CellValue IN ($TOKENS$) $ADDITIONALS$
+                ) AS firstcolumn $INNERJOINS$
         """
 
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
-        sql = self.base_sql.replace('$TOKENS$', db.create_sql_list_str(db.clean_value_collection(self.input[self.input.columns.values[0]])))\
-            .replace('$TOPK$', f'{self.k}')
+        firstcolumn_values = self.input[self.input.columns.values[0]]
+
+        sql = self.base_sql.replace('$TOPK$', f'{self.k}')
+        sql = sql.replace('$TOKENS$', db.create_sql_list_str(db.clean_value_collection(firstcolumn_values)))
 
         innerjoins = ''
         for column_index in range(1, len(self.input.columns.values)):
-            innerjoins += f' INNER JOIN (SELECT TableId, RowId, CellValue, ColumnId FROM AllTables WHERE CellValue ' \
-                          f'IN ({db.create_sql_list_str(db.clean_value_collection(self.input[self.input.columns.values[column_index]]))}) $ADDITIONALS$ ) clm_{self.input.columns.values[column_index]}   ' \
-                          f'ON firstcolumn.TableId = clm_{self.input.columns.values[column_index]}.TableID AND firstcolumn.RowId = clm_{self.input.columns.values[column_index]}.RowId'
-            sql = sql.replace('$OTHER_SELECT_COLUMNS$',
-                                            f' , clm_{self.input.columns.values[column_index]}.CellValue, clm_{self.input.columns.values[column_index]}.ColumnId $OTHER_SELECT_COLUMNS$ ')
+            column_values = self.input[self.input.columns.values[column_index]]
+            column_name = db.random_subquery_name()
+
+            innerjoins += f"""
+                INNER JOIN
+                    (
+                        SELECT TableId, RowId, CellValue, ColumnId FROM AllTables
+                        WHERE CellValue IN ({db.create_sql_list_str(db.clean_value_collection(column_values))})
+                            $ADDITIONALS$
+                    ) AS clm_{column_name}
+                ON firstcolumn.TableId = clm_{column_name}.TableID AND firstcolumn.RowId = clm_{column_name}.RowId
+            """
+
+            # other_select_columns = f' , clm_{column_name}.CellValue, clm_{column_name}.ColumnId $OTHER_SELECT_COLUMNS$ '
+            # sql = sql.replace('$OTHER_SELECT_COLUMNS$', other_select_columns)
         
-        sql = sql.replace('$INNERJOINS$', innerjoins).replace('$ADDITIONALS$', additionals).replace('$OTHER_SELECT_COLUMNS$', '')
+        sql = sql.replace('$OTHER_SELECT_COLUMNS$', '')
+        sql = sql.replace('$INNERJOINS$', innerjoins)
+        sql = sql.replace('$ADDITIONALS$', additionals)
 
 
-        PLs = db.execute_and_fetchall(sql)
-        results = self.run_filter(PLs, db)
+        candidates = db.execute_and_fetchall(sql)
+        results = self.run_filter(candidates, db)
 
         # Since we need an sql query we need to put the result into a subquery
         if len(results) == 0:
             return "SELECT TableId FROM AllTables WHERE 1=0"
         
-        sql = f"""
-            SELECT TableId FROM (
-        """
-        for i, result in enumerate(results):
-            sql += f"SELECT {result} AS TableId"
-            if i < len(results) - 1:
-                sql += " UNION ALL "
-        sql += f"""
-            ) AS {db.random_subquery_name()}
-        """
+        sql = db.table_ids_to_sql(results)
 
         return sql
 
@@ -60,10 +70,10 @@ class MultiColumnOverlap(Seeker):
 
 
     def run_filter(self, PLs: List, db: DBHandler) -> List[int]:
-        PL_dictionary = {}
+        # - Preprocessing
+        PL_dictionary = defaultdict(list)
         PL_candidate_structure = {}
         for tablerow_superkey in PLs:
-            # table_row = tablerow_superkey[0]
             table = tablerow_superkey[0]
             row = tablerow_superkey[1]
             superkey = tablerow_superkey[2]
@@ -71,21 +81,20 @@ class MultiColumnOverlap(Seeker):
             colid = tablerow_superkey[4]
             tokens = [tablerow_superkey[x] for x in np.arange(5, len(tablerow_superkey), 2)]
             cols = [tablerow_superkey[x] for x in np.arange(6, len(tablerow_superkey), 2)]
-            if table in PL_dictionary:
-                PL_dictionary[table] += [(row, superkey, token, colid)]
-            else:
-                PL_dictionary[table] = [(row, superkey, token, colid)]
+            PL_dictionary[table].append((row, superkey, token, colid))
             PL_candidate_structure[(table, row)] = [tokens, cols]
 
         top_joinable_tables = []  # each item includes: Tableid, joinable_rows
-        heapify(top_joinable_tables)
+        
         query_columns = self.input.columns.values
+        # Calculate superkey for all input rows
         self.input['SuperKey'] = self.input.apply(lambda row: self.hash_row_vals(row), axis=1)
 
+        # Get all rows grouped by first token of each row
         g = self.input.groupby([self.input.columns.values[0]])
-        gd = {}
+        gd = defaultdict(list)
         for key, item in g:
-            gd[str(key[0])] = np.array(g.get_group(key[0]))
+            gd[str(key[0])] = g.get_group(key[0]).values
 
         candidate_external_row_ids = []
         candidate_external_col_ids = []

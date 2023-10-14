@@ -6,7 +6,7 @@ import pandas as pd
 from typing import Iterable
 
 
-def AugmentationByExample(examples: pd.DataFrame, queries: Iterable[str], k: int = 10) -> Plan:
+def DataImputation(examples: pd.DataFrame, queries: Iterable[str], k: int = 10) -> Plan:
     plan = Plan()
     inputs = Input([examples, queries])
     plan.add('input', inputs)

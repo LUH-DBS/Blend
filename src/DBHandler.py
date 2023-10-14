@@ -1,6 +1,7 @@
 import random
 import configparser
 from pathlib import Path
+import pandas as pd
 
 # Typing imports
 from typing import List, Union, Tuple, Iterable
@@ -14,6 +15,8 @@ class DBHandler(object):
         self.index_table = None
 
         config_path = Path(__file__).parent.parent / 'config' / 'config.ini'
+        if not config_path.exists():
+            raise FileNotFoundError(f"Config file not found at {config_path}")
         self.load_config(config_path)
 
     def load_config(self, config_path: Path) -> None:
@@ -23,6 +26,7 @@ class DBHandler(object):
         config.read(config_path)
 
         dbms = config['Database']['dbms'].lower()
+        self.dbms = dbms
         if dbms == 'vertica':
             import vertica_python
             self.connection = vertica_python.connect(
@@ -68,10 +72,55 @@ class DBHandler(object):
     def execute_and_fetchall(self, query: str) -> List[Union[Tuple, List]]:
         """Returns results"""
         query = self.clean_query(query)
+        # Temporary fix
+        if self.dbms == 'postgres':
+            query = query.replace('TO_BITSTRING(superkey)', f'superkey')
+        query.replace('TO_BITSTRING(superkey)', f'superkey')
+        query = query.replace('CellValue', 'tokenized').replace("superkey", "super_key").replace("ColumnId", "colid")
+
         self.cursor.execute(query)
         results = self.cursor.fetchall()
 
         return results
+    
+    def get_table_from_index(self, table_id: int) -> pd.DataFrame:
+        sql = f"""
+        SELECT CellValue, ColumnId, RowId
+        FROM AllTables
+        WHERE TableId = {table_id}
+        """
+
+        results = self.execute_and_fetchall(sql)
+
+        df = pd.DataFrame(results, columns=['CellValue', 'ColumnId', 'RowId'])
+        df = df.pivot(index='RowId', columns='ColumnId', values='CellValue')
+        df.index.name = None
+        df.columns.name = None
+
+        return df
+    
+    def table_ids_to_sql(self, table_ids: Iterable[int]) -> str:
+        if self.dbms == 'postgres':
+            return f"""
+            SELECT * FROM
+            (VALUES {' ,'.join([f"({table_id})" for table_id in table_ids])}
+            AS {DBHandler.random_subquery_name()}(TableId)
+            """
+        elif self.dbms == 'vertica':
+            return f"""
+            SELECT TableId
+            FROM (
+                SELECT Explode(Array[{', '.join(f"{table_id}" for table_id in table_ids)}])
+                OVER (Partition Best) AS (Index_In_Array, TableId)
+            ) {DBHandler.random_subquery_name()}
+            """
+        
+        return f"""
+            SELECT TableId FROM (
+            {' UNION ALL '.join([f'SELECT {table_id} AS TableId' for table_id in table_ids])}
+            ) AS {DBHandler.random_subquery_name()}
+        """
+
     
     @staticmethod
     def clean_value_collection(values: Iterable[any]) -> List[str]:

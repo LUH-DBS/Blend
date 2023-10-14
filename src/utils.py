@@ -1,5 +1,8 @@
 from collections import Counter
-
+from  pathlib import Path
+import pandas as pd
+from collections import defaultdict
+import numpy as np
 
 def calculate_xash(token: str, hash_size: int = 128) -> int:
     """Calculates the XASH hash of a token."""
@@ -53,3 +56,82 @@ def calculate_xash(token: str, hash_size: int = 128) -> int:
     result = result | length_bit
 
     return result
+
+
+
+def df_to_index(df: pd.DataFrame) -> pd.DataFrame:
+    tableid = int(df.columns.name)
+
+    numeric_cols = df.select_dtypes(include='number').columns
+    numeric_cols = [df.columns.get_loc(col) for col in numeric_cols]
+    
+    file_content = df.values
+    number_of_rows = file_content.shape[0]
+    number_of_cols = file_content.shape[1]
+    
+
+    superkeys = defaultdict(int)
+    new_data = []
+    for col_counter in range(number_of_cols):
+        is_numeric_col = col_counter in numeric_cols
+        if is_numeric_col:
+            mean = df.iloc[:, col_counter].mean()
+        for row_counter in range(number_of_rows):
+            tokenized = str(file_content[row_counter][col_counter]).lower().replace('\\', '').replace('\'', '').replace('\"', '').replace('\t', '').replace('\n', '').replace('\r', '')[:200]
+            if tokenized == 'nan' or tokenized == 'none':
+                tokenized = ''
+            quadrant = file_content[row_counter][col_counter] >= mean if is_numeric_col else None
+            new_data.append((tokenized, tableid, col_counter, row_counter, quadrant))
+            superkeys[row_counter] = superkeys[row_counter] | calculate_xash(str(tokenized))
+    
+
+    superkeys_as_binary = {key: f"0x{superkey:032x}" for key, superkey in superkeys.items()}
+    new_data = [(x[0], x[1], x[2], x[3], superkeys_as_binary[x[3]], x[4]) for x in new_data]
+
+    return pd.DataFrame(new_data, columns=['CellValue', 'TableId', 'ColumnId', 'RowId', 'SuperKey', 'Quadrant'])
+
+
+class Logger(object):
+    def __init__(self, logging_path='logs/', clear_logs=False):
+        self.logging_path = Path(logging_path)
+        self.logging_path.mkdir(parents=True, exist_ok=True)
+
+        print("Logger using path: ", self.logging_path.absolute(), end='\n\n')
+        self.used_logs = dict()
+        self.clear_logs = clear_logs
+
+    def _open_log(self, logname):
+        if logname in self.used_logs:
+            return
+        
+        fp = self.logging_path / f"{logname}.csv"
+        if not fp.exists():
+            self.used_logs[logname] = pd.DataFrame()
+        else:
+            self.used_logs[logname] = pd.read_csv(fp, sep=',')
+
+    def log(self, logname, data):
+        if logname not in self.used_logs:
+            if self.clear_logs:
+                self.used_logs[logname] = pd.DataFrame(columns=data.keys())
+            else:
+                self._open_log(logname)
+            
+        self.used_logs[logname] = pd.concat([self.used_logs[logname], pd.DataFrame(data, index=[0])], ignore_index=True)
+        self.used_logs[logname].to_csv(self.logging_path / f"{logname}.csv", sep=',', index=False)
+
+    def read_average_log(self, logname, metric_to_read, k):
+        self._open_log(logname)
+        df = self.used_logs[logname]
+        df = df[df['k'] == k]
+        vals = df[metric_to_read]
+
+        print(vals.describe())
+
+    def describe_log(self, logname):
+        self._open_log(logname)
+        df = self.used_logs[logname]
+
+        print(df.describe())
+
+
