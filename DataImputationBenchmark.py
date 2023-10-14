@@ -53,7 +53,7 @@ def main():
 
 
         task = DataImputation(example_df, query_values, k=k)
-        task.DB.index_table = 'gittables_main_tokenized'
+        task.DB.index_table = 'gittables_quadrants'
         start = time.time()
         result_ids = task.run()
         end = time.time()
