@@ -77,7 +77,7 @@ def df_to_index(df: pd.DataFrame) -> pd.DataFrame:
         if is_numeric_col:
             mean = df.iloc[:, col_counter].mean()
         for row_counter in range(number_of_rows):
-            tokenized = str(file_content[row_counter][col_counter]).lower().replace('\\', '').replace('\'', '').replace('\"', '').replace('\t', '').replace('\n', '').replace('\r', '')[:200]
+            tokenized = str(file_content[row_counter][col_counter]).lower().replace('\\', '').replace('\'', '').replace('\"', '').replace('\t', '').replace('\n', '').replace('\r', '').strip()[:200]
             if tokenized == 'nan' or tokenized == 'none':
                 tokenized = ''
             quadrant = file_content[row_counter][col_counter] >= mean if is_numeric_col else None

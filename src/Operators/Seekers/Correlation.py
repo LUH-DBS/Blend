@@ -65,4 +65,4 @@ class Correlation(Seeker):
         return sql
 
     def cost(self) -> int:
-        return 10
+        return 6

@@ -13,7 +13,7 @@ from typing import List
 class MultiColumnOverlap(Seeker):
     def __init__(self, input_df: pd.DataFrame, k: int = 10) -> None:
         super().__init__(k)
-        self.input = input_df.copy()
+        self.input = input_df.copy().astype(str)
         self.base_sql = """
             SELECT firstcolumn.TableId, firstcolumn.RowId, firstcolumn.superkey, firstcolumn.CellValue,
                     firstcolumn.ColumnId $OTHER_SELECT_COLUMNS$
@@ -66,7 +66,7 @@ class MultiColumnOverlap(Seeker):
 
     
     def cost(self) -> int:
-        return 6
+        return 10
 
 
     def run_filter(self, PLs: List, db: DBHandler) -> List[int]:

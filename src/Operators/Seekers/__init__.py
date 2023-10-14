@@ -5,3 +5,4 @@ from src.Operators.Seekers.SingleColumnOverlap import SingleColumnOverlap
 
 MC = MultiColumnOverlap
 SC = SingleColumnOverlap
+C = Correlation

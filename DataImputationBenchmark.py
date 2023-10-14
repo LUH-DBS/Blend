@@ -33,9 +33,10 @@ def main():
 
 
     counter = 0
+    runtimes = []
     for file_path in tqdm(list(sorted(glob(query_path)))):
         counter += 1
-        df = pd.read_csv(file_path, header=None).astype(str)
+        df = pd.read_csv(file_path, header=None).dropna().astype(str)
         if len(df) > 5:
             example_df = df.head(5).iloc[:, : 2]
             query_values = df.iloc[5:, :][df.columns.values[0]]
@@ -53,7 +54,7 @@ def main():
 
 
         task = DataImputation(example_df, query_values, k=k)
-        task.DB.index_table = 'gittables_main_tokenized'
+        task.DB.index_table = 'gittables_quadrants'
         start = time.time()
         result_ids = task.run()
         end = time.time()
@@ -68,6 +69,9 @@ def main():
                 query_path=file_path,
             )
         )
+
+        runtimes.append(end - start)
+    print(f"Runtime avg: {sum(runtimes) / len(runtimes):.3f}s")
 
 
 
