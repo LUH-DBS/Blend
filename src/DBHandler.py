@@ -73,7 +73,6 @@ class DBHandler(object):
     def execute_and_fetchall(self, query: str) -> List[Union[Tuple, List]]:
         """Returns results"""
         query = self.clean_query(query)
-        # Temporary fix
         if self.dbms == 'postgres':
             query = query.replace('TO_BITSTRING(superkey)', f'superkey')
         query.replace('TO_BITSTRING(superkey)', f'superkey')
@@ -101,6 +100,9 @@ class DBHandler(object):
         return df
     
     def table_ids_to_sql(self, table_ids: Iterable[int]) -> str:
+        if len(table_ids) == 0:
+            return "SELECT 0 AS TableId WHERE 1 = 0"
+
         if self.dbms == 'postgres':
             return f"""
             SELECT * FROM (

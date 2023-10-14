@@ -9,6 +9,9 @@ from typing import List
 class Difference(Combiner):
     def __init__(self, k: int = 10):
         super().__init__(k)
+
+    def cost(self) -> int:
+        return self.inputs[1].cost()
     
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         minus_results = self.inputs[1].run(db, additionals=additionals)
