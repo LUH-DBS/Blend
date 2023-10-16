@@ -85,7 +85,7 @@ aug.run()
 ```
 
 ## Experiments
-### Additional experiments
+### Runtime Break Down
 
 ![Runtime break down experiment](images/runtime_breakdown.png)
 
@@ -117,3 +117,7 @@ posting lists, depending on the number of candidate tables, require
 additional fetching time. However, the SQL query used in Blend
 reduces the number of candidate tables, therefore, it reduces the
 loading overhead from 68.2% in MATE to 14.3%.
+
+### BLEND optimizer VS. Postgres and Vertica
+As augmentation-by-example leverages various seekers, we evaluated the performance of our query rewriter in the execution engine compared to two baselines that only use the native DBMS optimizer: executing queries independently and then merging the results, and modeling the operator sequence with subquery formulations. According to our experiments on both commercial column store and PostgreSQL, our query rewriter is able to achieve up to 28% and 27% runtime reduction compared to the baselines mentioned above respectively.
+
