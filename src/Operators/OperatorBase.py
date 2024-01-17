@@ -17,8 +17,11 @@ class Operator(ABC):
     @abstractmethod
     def cost(self) -> int:
         raise NotImplementedError
-    
+
+    @abstractmethod
+    def ml_cost(self, db: DBHandler) -> float:
+        raise NotImplementedError
+
     @abstractmethod
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         raise NotImplementedError
-    

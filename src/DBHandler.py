@@ -6,9 +6,12 @@ import pandas as pd
 # Typing imports
 from typing import List, Union, Tuple, Iterable
 from numbers import Number
+import pickle
 
 
 class DBHandler(object):
+    frequency_dict = None
+
     def __init__(self) -> None:
         self.connection = None
         self.cursor = None
@@ -57,6 +60,13 @@ class DBHandler(object):
 
         self.cursor = self.connection.cursor()
         self.index_table = config['Database']['index_table']
+        if DBHandler.frequency_dict is None:
+            try:
+                print("Loading frequency dict...")
+                DBHandler.frequency_dict = pickle.load(open("freqs_dict.pkl", 'rb'))
+            except FileNotFoundError as e:
+                print("Could not load frequency dict")
+                raise e
 
     def close(self) -> None:
         if self.cursor is not None:
@@ -92,7 +102,7 @@ class DBHandler(object):
 
         results = self.execute_and_fetchall(sql)
 
-        df = pd.DataFrame(results, columns=['CellValue', 'ColumnId', 'RowId'])
+        df = pd.DataFrame(results, columns=['CellValue', 'ColumnId', 'RowId'], dtype=str)
         df = df.pivot(index='RowId', columns='ColumnId', values='CellValue')
         df.index.name = None
         df.columns.name = None
@@ -123,6 +133,11 @@ class DBHandler(object):
             {' UNION ALL '.join([f'SELECT {table_id} AS TableId' for table_id in table_ids])}
             ) AS {DBHandler.random_subquery_name()}
         """
+    
+    def get_token_frequencies(self, tokens: Iterable[str]) -> dict[str, int]:
+        tokens = DBHandler.clean_value_collection(set(tokens))
+        
+        return {token: DBHandler.frequency_dict.get(token, 1) for token in tokens}
 
     
     @staticmethod

@@ -15,3 +15,6 @@ class Combiner(Operator, ABC):
 
     def cost(self) -> int:
         return sum(input_.cost() for input_ in self.inputs)
+    
+    def ml_cost(self, db) -> float:
+        return sum(input_.ml_cost(db) for input_ in self.inputs)

@@ -67,7 +67,9 @@ class MultiColumnOverlap(Seeker):
     
     def cost(self) -> int:
         return 10
-
+    
+    def ml_cost(self, db: DBHandler) -> float:
+        return self._predict_runtime([list(col) for col in self.input.values.T], db)
 
     def run_filter(self, PLs: List, db: DBHandler) -> List[int]:
         # - Preprocessing
@@ -88,10 +90,11 @@ class MultiColumnOverlap(Seeker):
         
         query_columns = self.input.columns.values
         # Calculate superkey for all input rows
-        self.input['SuperKey'] = self.input.apply(lambda row: self.hash_row_vals(row), axis=1)
+        input_cpy = self.input.copy()
+        input_cpy['SuperKey'] = input_cpy.apply(lambda row: self.hash_row_vals(row), axis=1)
 
         # Get all rows grouped by first token of each row
-        g = self.input.groupby([self.input.columns.values[0]])
+        g = input_cpy.groupby([input_cpy.columns.values[0]])
         gd = defaultdict(list)
         for key, item in g:
             gd[str(key[0])] = g.get_group(key[0]).values
@@ -105,7 +108,7 @@ class MultiColumnOverlap(Seeker):
         total_approved = 0
         total_match = 0
         overlaps_dict = {}
-        super_key_index = list(self.input.columns.values).index('SuperKey')
+        super_key_index = list(input_cpy.columns.values).index('SuperKey')
         checked_tables = 0
         max_table_check = 10000000
         for tableid in sorted(PL_dictionary, key=lambda k: len(PL_dictionary[k]), reverse=True)[:max_table_check]:

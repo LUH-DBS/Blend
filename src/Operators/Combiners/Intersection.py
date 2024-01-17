@@ -1,5 +1,7 @@
 from src.Operators.Combiners.CombinerBase import Combiner
 
+from functools import cmp_to_key
+
 # Typing imports
 from src.DBHandler import DBHandler
 
@@ -12,8 +14,18 @@ class Intersection(Combiner):
         # Assuming most calculations are pruned by the first input
         return min(input_.cost() for input_ in self.inputs)
     
+    def ml_cost(self, db: DBHandler) -> float:
+        # Assuming most calculations are pruned by the first input
+        return min(input_.ml_cost(db) for input_ in self.inputs)
+    
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
-        sorted_inputs = list(sorted(self.inputs, key=lambda operator: operator.cost()))
+        def lazy_comparator(operator1, operator2):
+            if operator1.cost() != operator2.cost():
+                return operator1.cost() - operator2.cost()
+            else:
+                return operator1.ml_cost(db) - operator2.ml_cost(db)
+        
+        sorted_inputs = list(sorted(self.inputs, key=cmp_to_key(lazy_comparator)))
 
         for input_ in sorted_inputs[:-1]:
             result = input_.run(db, additionals=additionals)

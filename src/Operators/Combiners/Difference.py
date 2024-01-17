@@ -13,6 +13,9 @@ class Difference(Combiner):
     def cost(self) -> int:
         return self.inputs[1].cost()
     
+    def ml_cost(self, db: DBHandler) -> float:
+        return self.inputs[1].ml_cost(db)
+    
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         minus_results = self.inputs[1].run(db, additionals=additionals)
         additionals += f" AND TableId NOT IN ({db.create_sql_list_numeric(minus_results)}) " if minus_results else ""
