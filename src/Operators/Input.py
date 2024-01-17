@@ -11,5 +11,8 @@ class Input(Operator):
     def cost(self) -> int:
         return 0
     
+    def ml_cost(self, db: DBHandler) -> float:
+        return 0.0
+    
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         raise NotImplementedError("Input operator cannot be used in SQL query.")

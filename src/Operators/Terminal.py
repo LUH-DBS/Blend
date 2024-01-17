@@ -11,7 +11,10 @@ class Terminal(Operator):
         self.input = input_
 
     def cost(self) -> int:
-        return 0
+        return self.input.cost() if self.input is not None else 0
+    
+    def ml_cost(self, db: DBHandler) -> float:
+        return self.input.ml_cost(db) if self.input is not None else 0.0
     
     def set_input(self, input_: Operator) -> None:
         if input_ is None:

@@ -66,3 +66,6 @@ class Correlation(Seeker):
 
     def cost(self) -> int:
         return 6
+    
+    def ml_cost(self, db: DBHandler) -> float:
+        return self._predict_runtime([[token for token in self.input_source]], db)

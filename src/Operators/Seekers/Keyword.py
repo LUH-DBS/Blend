@@ -26,3 +26,6 @@ class Keyword(Seeker):
 
     def cost(self) -> int:
         return 3
+    
+    def ml_cost(self, db: DBHandler) -> float:
+        return self._predict_runtime([list(self.input)], db)
