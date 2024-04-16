@@ -1,5 +1,5 @@
 # User Study
-We conducted a survey and obtained results from 18 participants (40% responserate) covering diverse sectors,such as health care, banking, technology, and universities.We aimed tounderstand preferences, needs, and challenges in data discovery and let participants choose between different implementations of simple and complex pipelines.
+We conducted a survey and obtained results from 18 participants (40% responserate) covering diverse sectors, such as health care, banking, technology, and universities. We aimed to understand preferences, needs, and challenges in data discovery and let participants choose between different implementations of simple and complex pipelines.
 
 <figure>
     <img
@@ -12,18 +12,50 @@ Table 1 illustrates the summarized statistics of the study and breaks down the r
 
 Research indicates those involved in academia,and Industry are individuals employed in companies. Below we present the individual questions and the results as well as a discussion for each question.
 
-## Section 1: Intro
-### Survey on pipelining data discovery
+## Intro: Survey on pipelining data discovery
 In this survey, we want to study the preferences of ML and data practitioners that rely on data discovery.
 
 Data privacy policy: 
 To ensure compliance with the EU General Data Protection Regulation (GDPR), we want to clarify our data collection practices. We do not collect any personal information, and it is imperative that you refrain from providing sensitive details. Our data collection is restricted to gathering information about the type of organization you represent and your role within it. This information is used solely for the purpose of categorizing participants and facilitating group analysis. It is crucial to emphasize that only aggregated and anonymized results of the questionnaire will be published, guaranteeing the confidentiality and privacy of individual responses.
 
-## Section 2: Participant's info
-Please answer to the following questions.
+## Questions
 ### Question 1: Type of industry (education, finance, automotive, ...)
+#### Choices
+Free text input.
+#### Results
+| Answer                     | Count | Area of Work  |
+|----------------------------|-------|---------------|
+| Academia, applied projects | 1     | Research      |
+| Education                  | 6     | Research      |
+| Research                   | 2     | Research      |
+| Automotive                 | 2     | Industry      |
+| Finance                    | 3     | Industry      |
+| Finance and business       | 1     | Industry      |
+| Healthcare                 | 1     | Industry      |
+| IoT                        | 1     | Industry      |
+| Software industry          | 1     | Industry      |
+
+Of the 18 participants, 9 are grouped under the research category, while the remaining 9 are classified as industry participants. The research category includes participants from academia, applied projects, and education. The industry category encompasses participants from various sectors, such as automotive, finance, healthcare, IoT, and software industry.
 
 ### Question 2: Your role in the organization
+#### Choices
+Free text input.
+#### Results
+| Research | Industry |
+|----------|----------|
+| Senior Researcher | Head of Cloud Development |
+| Research Associate | Software Developer |
+| Research Associate | Developer |
+| Researcher | Developer |
+| Researcher | Data Scientist |
+| Professor | Master Student |
+| PhD Student | Data Science Trainee |
+| PhD Student | Senior ML Engineer |
+| PhD Student | Software Engineer |
+| Research Assistant | Senior Engineer |
+
+
+
 
 ## Section 3: Data Discovery
 Dear Participants,
@@ -40,9 +72,9 @@ Data discovery involves the process of locating and extracting relevant informat
 
 2. **University Projects:** Consider a scenario where you have a university project, but the datasets required for your analysis are not readily accessible. You might need to explore public sources to find relevant datasets that align with the objectives of your project. Imagine the project of Analyzing smartphone market trends and consumer behavior to provide insights on factors influencing purchasing decisions. One should utilize datasets sourced from government data, market sales info, and industry publications. 
 
-## Section 4: Survey questions Part 1
 ### Question 3: What programming languages are you familiar with?
 Choose all that apply:
+#### Choices
 - Python
 - C or C++
 - JavaScript
@@ -76,6 +108,7 @@ The majority of participants (94.4%) are familiar with Python, followed by Java 
 
 ### Question 4: How often do you require data discovery in your data analytics pipelines?
 Choose one of the following:
+#### Choices
 - 1: Rarely
 - 2
 - 3
@@ -101,6 +134,7 @@ Use some commercial tool to navigate the sources: 22.2%
 Domain experts of the data provider: 11.1%
 
 Choose all that apply:
+#### Choices
 - Asking other people or more senior employees where is the data.
 - Writing SQL queries and use database metadata to understand the content.
 - Manual work: writing scripts, visual inspection.
@@ -122,6 +156,7 @@ Choose all that apply:
 
 ### Question 6: How often do you find the required dataset with a single search?
 Choose one of the following:
+#### Choices
 - 1: Rarely
 - 2
 - 3
