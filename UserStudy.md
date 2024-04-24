@@ -1,28 +1,18 @@
 # User Study
-We conducted a survey and obtained results from 18 participants (40% responserate) covering diverse sectors, such as health care, banking, technology, and universities. We aimed to understand preferences, needs, and challenges in data discovery and let participants choose between different implementations of simple and complex pipelines.
+We conducted a survey and obtained results from 18 participants (40% response rate) covering diverse sectors, such as health care, banking, technology, and universities. We aimed to understand preferences, needs, and challenges in data discovery and let participants choose between different implementations of simple and complex pipelines.
 
-<figure>
-    <img
-    src="images/user_study_summary.png"
-    alt="Table 1: User Study Summary.">
-    <figcaption style="text-align: center;"><strong>Table 1: User Study Summary.</strong></figcaption>
-</figure>
+The questionaire was divided into two sections:
+1. Background information on the participants
+2. Questions on data discovery
 
-Table 1 illustrates the summarized statistics of the study and breaks down the results based on the participant affiliation:
+Below we present the results of the survey, including the participants' roles, the industries they represent, their familiarity with programming languages, and their preferences for data discovery tools and methods.
 
-Research indicates those involved in academia,and Industry are individuals employed in companies. Below we present the individual questions and the results as well as a discussion for each question.
+## Section 1: Background Information
+In order to gain insight into the participants' backgrounds and the potential influence of their roles and industries on their preferences and needs in data discovery, we asked them about their area of work and roles within their organizations.
 
-## Intro: Survey on pipelining data discovery
-In this survey, we want to study the preferences of ML and data practitioners that rely on data discovery.
-
-Data privacy policy: 
-To ensure compliance with the EU General Data Protection Regulation (GDPR), we want to clarify our data collection practices. We do not collect any personal information, and it is imperative that you refrain from providing sensitive details. Our data collection is restricted to gathering information about the type of organization you represent and your role within it. This information is used solely for the purpose of categorizing participants and facilitating group analysis. It is crucial to emphasize that only aggregated and anonymized results of the questionnaire will be published, guaranteeing the confidentiality and privacy of individual responses.
-
-## Questions
-### Question 1: Type of industry (education, finance, automotive, ...)
-#### Choices
-Free text input.
-#### Results
+### Question 1: What type of industry (education, finance, automotive, ...) do you belong to?
+In order to group the participants according to their area of work, we asked them about their type of industry they belong to.
+#### Results (from free text input)
 | Answer                     | Count | Area of Work  |
 |----------------------------|-------|---------------|
 | Academia, applied projects | 1     | Research      |
@@ -35,12 +25,11 @@ Free text input.
 | IoT                        | 1     | Industry      |
 | Software industry          | 1     | Industry      |
 
-Of the 18 participants, 9 are grouped under the research category, while the remaining 9 are classified as industry participants. The research category includes participants from academia, applied projects, and education. The industry category encompasses participants from various sectors, such as automotive, finance, healthcare, IoT, and software industry.
+Based on their answers we have grouped the 18 participants into two categories: Research and Industry. Research includes participants from academia, applied projects, and education. Industry includes participants from the automotive, finance, healthcare, IoT, and software industry.
 
-### Question 2: Your role in the organization
-#### Choices
-Free text input.
-#### Results
+### Question 2: What is your role in the organization?
+To get better insights into the individual participants' we have asked them about their roles within their organizations.
+#### Results (from free text input)
 | Research | Industry |
 |----------|----------|
 | Senior Researcher | Head of Cloud Development |
@@ -55,26 +44,16 @@ Free text input.
 | Research Assistant | Senior Engineer |
 
 
+The Research group includes roles such as Senior Researcher, Research Associate, Researcher, Professor, PhD Student, and Research Assistant.
+
+The Industry group includes roles such as Head of Cloud Development, Software Developer, Developer, Data Scientist, Master Student, Data Science Trainee, Senior ML Engineer, Software Engineer, and Senior Engineer.
 
 
-## Section 3: Data Discovery
-Dear Participants,
-
-Thank you for taking the time to participate in our survey on data discovery. In the following, we first give some background context on the terminology we will use in the survey.
-
-**What is Data Discovery from a Data Lake?**
-
-Data discovery involves the process of locating and extracting relevant information from large and complex data lakes. A data lake is a vast repository that holds raw data, providing a centralized storage solution. Imagine it as an expansive reservoir of information waiting to be explored and utilized.
-
-**Examples of Data Discovery Scenarios:**
-
-1. **Machine Learning Tasks:** Suppose you are working on a machine learning task, but the required information is not readily available in your dataset. In such cases, effective data discovery becomes crucial to identify and retrieve the necessary features and patterns to enhance the performance of your models. Consider a machine learning project aiming to predict house prices. The dataset lacks crucial information such as house size and location. To address this, data discovery is essential. You might need to explore external sources to find missing details like square footage, neighborhood information, and additional features.
-
-2. **University Projects:** Consider a scenario where you have a university project, but the datasets required for your analysis are not readily accessible. You might need to explore public sources to find relevant datasets that align with the objectives of your project. Imagine the project of Analyzing smartphone market trends and consumer behavior to provide insights on factors influencing purchasing decisions. One should utilize datasets sourced from government data, market sales info, and industry publications. 
-
+## Section 2: Data Discovery
+The second section of the questionnaire focused on getting insights into the participants' preferences and needs in data discovery.
 ### Question 3: What programming languages are you familiar with?
-Choose all that apply:
-#### Choices
+To start we asked the participants about the programming languages they are familiar with, to understand their technical background and how they approach data discovery tasks.
+#### Muliple-Choice
 - Python
 - C or C++
 - JavaScript
@@ -86,29 +65,13 @@ Choose all that apply:
 - _Other (please specify)_
 
 #### Results
-| Language   | Research | Industry | All   |
-|------------|----------|----------|-------|
-| Python     | 100%     | 88.9%    | 94.4% |
-| Java       | 77.8%    | 88.9%    | 83.3% |
-| SQL        | 77.8%    | 77.8%    | 77.8% |
-| C or C++   | 55.6%    | 77.8%    | 66.7% |
-| JavaScript | 33.3%    | 44.4%    | 38.9% |
-| C#         | 22.2%    | 33.3%    | 27.8% |
-| GO         | 11.1%    | 44.4%    | 27.8% |
-| Rust       | 0.0%     | 22.2%    | 11.1% |
-| R          | 11.1%    | 11.1%    | 11.1% |
-| Julia      | 11.1%    | 0.0%     | 5.6%  |
-| Matlab     | 0.0%     | 11.1%    | 5.6%  |
-| Tableau    | 0.0%     | 11.1%    | 5.6%  |
-| Cobol      | 0.0%     | 11.1%    | 5.6%  |
 
-**Table 2: Familiarity with Programming Languages**
+![Familiarity with Programming Languages bar chart](images/programming_languages.svg)
 
-The majority of participants (94.4%) are familiar with Python, followed by Java (83.3%), SQL (77.8%), and C or C++ (66.7%).
+The majority of participants (94.4%) are familiar with Python, followed by Java (83.3%), SQL (77.8%), and C or C++ (66.7%). Distribution of familiarity with programming languages is similar between the Research and Industry groups.
 
 ### Question 4: How often do you require data discovery in your data analytics pipelines?
-Choose one of the following:
-#### Choices
+#### Single-Choice
 - 1: Rarely
 - 2
 - 3
@@ -116,25 +79,9 @@ Choose one of the following:
 - 5: Very often
 
 #### Results
-| Frequency | Research | Industry | All   |
-|-----------|----------|----------|-------|
-| 1         | 11.1%    | 22.2%    | 16.7% |
-| 2         | 44.4%    | 11.1%    | 27.8% |
-| 3         | 11.1%    | 33.3%    | 22.2% |
-| 4         | 22.2%    | 33.3%    | 27.8% |
-| 5         | 11.1%    | 0.0%     | 5.6%  |
-| Average   | 2.78     | 2.78     | 2.78  |
-
+[![Frequency of Data Discovery bar chart](images/frequency_data_discovery.svg)](images/frequency_data_discovery.svg)
 ### Question 5: How do you solve your data discovery problems?
-Manual work: writing scripts, visual inspection: 100.0%
-Use some open source tool to navigate the sources: 55.6%
-Writing SQL queries and use database metadata to understand the content: 44.4%
-Asking other people or more senior employees where is the data: 33.3%
-Use some commercial tool to navigate the sources: 22.2%
-Domain experts of the data provider: 11.1%
-
-Choose all that apply:
-#### Choices
+#### Multiple-Choice
 - Asking other people or more senior employees where is the data.
 - Writing SQL queries and use database metadata to understand the content.
 - Manual work: writing scripts, visual inspection.
@@ -155,37 +102,112 @@ Choose all that apply:
 | Other: Internal tool     | 0.0%     | 11.1%    | 5.6%  |
 
 ### Question 6: How often do you find the required dataset with a single search?
-Choose one of the following:
-#### Choices
+#### Single-Choice
 - 1: Rarely
 - 2
 - 3
 - 4
 - 5: Very often
+#### Results
+| Frequency | Research | Industry | All   |
+|-----------|----------|----------|-------|
+| 1         | 33.3%    | 22.2%    | 27.8% |
+| 2         | 22.2%    | 33.3%    | 27.8% |
+| 3         | 44.4%    | 22.2%    | 33.3% |
+| 4         | 0.0%     | 11.1%    | 5.6%  |
+| 5         | 0.0%     | 11.1%    | 5.6%  |
+| Average   | 2.11     | 2.56     | 2.33  |
 ### Question 7: What kind of discovery result typically satisfies the downstream application?
-Choose one of the following:
+#### Single-Choice
 - A single table
 - A composition of tables
 - Both
+#### Results
+| Answer       | Research | Industry | All   |
+|--------------|----------|----------|-------|
+| Single table | 0.0%     | 11.1%    | 5.6%  |
+| Composition  | 44.4%    | 11.1%    | 27.8% |
+| Both         | 55.6%    | 77.8%    | 66.6% |
+
 ### Question 8: Where does your data lake reside?
-Choose all that apply:
+#### Multiple-Choice
 - Databases
 - File systems
+#### Results
+| Location    | Research | Industry | All   |
+|-------------|----------|----------|-------|
+| Databases   | 33.3%    | 44.4%    | 38.9% |
+| File systems| 44.4%    | 0.0%     | 22.2% |
+| Both        | 22.2%    | 55.6%    | 38.9% |
+
+
 ### Question 9: Would you use databases if capabilities are provided, e.g., optimization, inverted index, and discovery operations?
-Choose one of the following:
+#### Single-Choice
 - Yes
 - No
+#### Results
+| Answer | Research | Industry | All   |
+|--------|----------|----------|-------|
+| Yes    | 100.0%   | 100.0%   | 100.0%|
+| No     | 0.0%     | 0.0%     | 0.0%  |
 ### Question 10: What kind of functionality or framework would support your discovery process?
-Free text input.
-### Question 11: Which of the following discovery task types are most similar to your data discovery needs?
-Choose all that apply:
-- Discover tables that contain a set of rows, e.g., <"Germany", "Berlin", "TXL">, <"France", "Paris", "CDG">
-- Discover tables that are joinable with the "movie_title" column
-- Discover tables that contain the following keywords: "Germany", "Bayern Munich", and "Manuel Neuer".
-- Find tables that are not only joinable with "movie_title" but also contain the "director names" in a column.
-- Find tables that contain a correlating column to the target column, that can benefit the downstream ML model.
+#### Results (from free text input)
 
-### Question 12.1: Which implementation do you find favorable?
+Semantic annotation of data resources and curated metadata for ease of further access; indexing mechanisms; visual inspection and profiling 
+
+Fluent and simple data formatting, (pre-)processing and R/W pipeline
+
+discoviering joinable tables
+
+easy data imports from the browser
+
+elastic search, kibana, simulation tools
+
+Sklearn-style data discovery API
+
+join discovery
+
+Distribution-aware data discovery
+
+A good index structure
+
+None
+
+User friendly Interface
+
+raw, aggregated and visualized data at the same time
+
+Description of tables, search over summerizations of tables
+
+not sure yet
+
+Simple Search and Access Process, Documentation
+
+join, visualization, impact on downstream artifacts etc
+
+not sure
+
+Smart indexing 
+
+### Question 11: Which of the following discovery task types are most similar to your data discovery needs?
+#### Multiple-Choice
+1.  Discover tables that contain a set of rows, e.g., <"Germany", "Berlin", "TXL">, <"France", "Paris", "CDG">
+2.  Discover tables that are joinable with the "movie_title" column
+3.  Discover tables that contain the following keywords: "Germany", "Bayern Munich", and "Manuel Neuer".
+4.  Find tables that are not only joinable with "movie_title" but also contain the "director names" in a column.
+5.  Find tables that contain a correlating column to the target column, that can benefit the downstream ML model.
+
+#### Results
+| Task | Research | Industry | All   |
+|------|----------|----------|-------|
+| 1    | 33.3%    | 66.7%    | 50.0% |
+| 2    | 44.4%    | 33.3%    | 38.9% |
+| 3    | 44.4%    | 33.3%    | 38.9% |
+| 4    | 33.3%    | 22.2%    | 27.8% |
+| 5    | 44.4%    | 55.6%    | 50.0% |
+
+
+### Question 12: Which implementation do you find favorable?
 Consider a data discovery task that enables us to enrich the table at hand to increase the accuracy of the ML model in predicting the IMDB score of movies:
 
 Task: Find tables that are not only joinable with "movie_title" but also contain the "director names" in a column. These tables should also contain a useful column, i.e., correlating column to the target column, that can benefit the downstream ML model.
@@ -198,14 +220,20 @@ The first implementation leverages a library that provides a specific abstractio
     alt="Figure 1: Task implementations for Question 12.">
     <figcaption style="text-align: center;"><strong>Figure 1: Task implementations for Question 12.</strong></figcaption>
 </figure>
-Which implementation do you find favorable? Choose one of the following:
+Which implementation do you find favorable?
 
-- Implementation 1
-- Implementation 2
+#### Single-Choice
+- First implementation
+- Second implementation
 
-### Question 12.2: Why?
-Free text input.
-### Question 13.1: Which implementation do you find favorable?
+#### Results
+| Implementation | Research | Industry | All   |
+|----------------|----------|----------|-------|
+| First          | 88.9%    | 88.9%    | 88.9% |
+| Second         | 11.1%    | 11.1%    | 11.1% |
+
+
+### Question 13: Which implementation do you find favorable?
 Consider the following data discovery task:
 
 Task: Find tables that contain the following keywords <"Bayern Munich", "Eintracht Frankfurt", "FC Köln", and "Hertha Berlin"> but do not contain these keywords <"Barcelona", "Paris Saint Germain", "Arsenal", and "Juventus">.
@@ -215,31 +243,38 @@ Please examine the three following implementations of the task:
 <figure>
     <img
     src="images/q13_1.png"
-    alt="Figure 2: Task implementation 1 for Question 13.">
-    <figcaption style="text-align: center;"><strong>Figure 2: Task implementation 1 for Question 13.</strong></figcaption>
+    alt="Figure 2: First implementation for Question 13.">
+    <figcaption style="text-align: center;"><strong>Figure 2: First implementation for Question 13.</strong></figcaption>
 </figure>
 <figure>
     <img
     src="images/q13_2.png"
-    alt="Figure 3: Task implementation 2 for Question 13.">
-    <figcaption style="text-align: center;"><strong>Figure 3: Task implementation 2 for Question 13.</strong></figcaption>
+    alt="Figure 3: Second implementation for Question 13.">
+    <figcaption style="text-align: center;"><strong>Figure 3: Second implementation for Question 13.</strong></figcaption>
 </figure>
 <figure>
     <img
     src="images/q13_3.png"
-    alt="Figure 4: Task implementation 3 for Question 13.">
-    <figcaption style="text-align: center;"><strong>Figure 4: Task implementation 3 for Question 13.</strong></figcaption>
+    alt="Figure 4: Third implementation for Question 13.">
+    <figcaption style="text-align: center;"><strong>Figure 4: Third implementation for Question 13.</strong></figcaption>
 </figure>
 
 
-Which implementation do you find favorable? Choose one of the following:
-- Implementation 1
-- Implementation 2
-- Implementation 3
+Which implementation do you find favorable?
+
+#### Single-Choice
+- First implementation
+- Second implementation
+- Third implementation
+
+#### Results
+| Implementation | Research | Industry | All   |
+|----------------|----------|----------|-------|
+| First          | 22.2%    | 11.1%    | 16.7% |
+| Second         | 33.3%    | 55.6%    | 44.4% |
+| Third          | 44.4%    | 33.3%    | 38.9% |
 
 
-### Question 13.2: Why?
-Free text input.
 
 With regard to the prevalence of discovery task types, participants commonly selected complex tasks. The two most common tasks were discovering tables containing a set of rows and contain
 ing a correlating column to a target. According to our participant breakdown, these complex tasks are more prevalent in industry. Accordingly, those participants indicated more often that their dis
