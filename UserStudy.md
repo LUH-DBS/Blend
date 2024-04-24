@@ -80,6 +80,8 @@ The majority of participants (94.4%) are familiar with Python, followed by Java 
 
 #### Results
 [![Frequency of Data Discovery bar chart](images/frequency_data_discovery.svg)](images/frequency_data_discovery.svg)
+
+
 ### Question 5: How do you solve your data discovery problems?
 #### Multiple-Choice
 - Asking other people or more senior employees where is the data.
@@ -100,6 +102,8 @@ The majority of participants (94.4%) are familiar with Python, followed by Java 
 | Other: Domain Expert     | 11.1%    | 0.0%     | 5.6%  |
 | Other: Datasets from API | 0.0%     | 11.1%    | 5.6%  |
 | Other: Internal tool     | 0.0%     | 11.1%    | 5.6%  |
+
+The majority of participants (77.8%) solve their data discovery problems manually, by writing scripts and visually inspecting the data. 50% of the participants use SQL queries to understand the content of the data. The Research group relies more on manual work (100%) compared to the Industry group (55.6%). The Industry group uses SQL queries more often (55.6%) compared to the Research group (44.4%).
 
 ### Question 6: How often do you find the required dataset with a single search?
 #### Single-Choice
