@@ -92,16 +92,7 @@ The majority of participants (94.4%) are familiar with Python, followed by Java 
 - _Other (please specify)._
 
 #### Results
-| Method                   | Research | Industry | All   |
-|--------------------------|----------|----------|-------|
-| Manual work              | 100.0%   | 55.6%    | 77.8% |
-| Writing SQL queries      | 44.4%    | 55.6%    | 50.0% |
-| Asking other people      | 33.3%    | 55.6%    | 44.4% |
-| Open source tool         | 55.6%    | 33.3%    | 44.4% |
-| Commercial tool          | 22.2%    | 22.2%    | 22.2% |
-| Other: Domain Expert     | 11.1%    | 0.0%     | 5.6%  |
-| Other: Datasets from API | 0.0%     | 11.1%    | 5.6%  |
-| Other: Internal tool     | 0.0%     | 11.1%    | 5.6%  |
+![Solving Data Discovery Problems bar chart](images/method.svg)
 
 The majority of participants (77.8%) solve their data discovery problems manually, by writing scripts and visually inspecting the data. 50% of the participants use SQL queries to understand the content of the data. The Research group relies more on manual work (100%) compared to the Industry group (55.6%). The Industry group uses SQL queries more often (55.6%) compared to the Research group (44.4%).
 
@@ -127,33 +118,28 @@ The majority of participants (77.8%) solve their data discovery problems manuall
 - A composition of tables
 - Both
 #### Results
-| Answer       | Research | Industry | All   |
-|--------------|----------|----------|-------|
-| Single table | 0.0%     | 11.1%    | 5.6%  |
-| Composition  | 44.4%    | 11.1%    | 27.8% |
-| Both         | 55.6%    | 77.8%    | 66.6% |
+![Discovery Result venn diagram](images/satisfactory.svg)
+
+The majority of participants (66.6%) require both a single table and a composition of tables to satisfy the downstream application. The Research group prefers compositions of tables (44.4%) compared to the Industry group (11.1%). The Industry group prefers both a single table and a composition of tables (77.8%) compared to the Research group (55.6%).
 
 ### Question 8: Where does your data lake reside?
 #### Multiple-Choice
 - Databases
 - File systems
 #### Results
-| Location    | Research | Industry | All   |
-|-------------|----------|----------|-------|
-| Databases   | 33.3%    | 44.4%    | 38.9% |
-| File systems| 44.4%    | 0.0%     | 22.2% |
-| Both        | 22.2%    | 55.6%    | 38.9% |
+![Data Lake Location venn diagram](images/residence.svg)
 
+77.8% indicated that their data lakes are managed at least
+partly via traditional DBMS; 38.9% reported to only use DBMS. It is
+noteworthy that among industrial participants the preference to
+store the data lake in a DBMS was higher compared to academics.
 
 ### Question 9: Would you use databases if capabilities are provided, e.g., optimization, inverted index, and discovery operations?
 #### Single-Choice
 - Yes
 - No
 #### Results
-| Answer | Research | Industry | All   |
-|--------|----------|----------|-------|
-| Yes    | 100.0%   | 100.0%   | 100.0%|
-| No     | 0.0%     | 0.0%     | 0.0%  |
+All attendants unanimously expressed that they would use a DBMS if data discovery capabilities such as, indexes and optimizations are provided.
 ### Question 10: What kind of functionality or framework would support your discovery process?
 #### Results (from free text input)
 
@@ -209,6 +195,8 @@ Smart indexing
 | 3    | 44.4%    | 33.3%    | 38.9% |
 | 4    | 33.3%    | 22.2%    | 27.8% |
 | 5    | 44.4%    | 55.6%    | 50.0% |
+
+With regard to the prevalence of discovery task types, participants commonly selected complex tasks. The two most common tasks were discovering tables containing a set of rows and containing a correlating column to a target. According to our participant breakdown, these complex tasks are more prevalent in industry. 
 
 
 ### Question 12: Which implementation do you find favorable?
@@ -279,11 +267,8 @@ Which implementation do you find favorable?
 | Third          | 44.4%    | 33.3%    | 38.9% |
 
 
-
-With regard to the prevalence of discovery task types, participants commonly selected complex tasks. The two most common tasks were discovering tables containing a set of rows and contain
-ing a correlating column to a target. According to our participant breakdown, these complex tasks are more prevalent in industry. Accordingly, those participants indicated more often that their dis
-covery needs are met by table compositions. 78% of the participants solve these complex problems by writing custom scripts from scratch, with 94.4% using Python for this pur
-pose. Also, 78% indicated that their data lakes are managed at least partly via traditional DBMS; 39% reported to only use DBMS. It is noteworthy that among industrial participants the preference to store the data lake in a DBMS was higher compared to academics. Regardless, all attendants unanimously expressed that they would use a DBMS if data discovery capabilities such as, indexes and optimizations are provided. Wealsosurveyed the users about their preference for implement
+ 
+Wealsosurveyed the users about their preference for implement
 ing simple and complex tasks. The simple task involves searching for keywords in tables, making sure they have a certain set of key
 words and not another. The complex task aims at finding tables that can be joined on two columns and also have columns corre
 lating to a specified target. For this purpose, we provided them an implementation via SysX and alternatives. The simple task was presented using SysX’s API, native Python, and SQL, while the complex task could only be implemented using SysX’s API and Python. For the simple task, the majority (44.4%) favor SysX closely followed by SQL (38.9%). Only 16,7% favored the native python implementation. For the complex task, this gap is even bigger as the Python implementation becomes significantly more complicated. Participants justify their choice by mentioning that SysX’s API is more flexible, concise, easy-to-understand, and robust w.r.t. errors. Summary. SysX enables users to construct custom data discov
