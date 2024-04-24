@@ -266,11 +266,3 @@ Which implementation do you find favorable?
 | Second         | 33.3%    | 55.6%    | 44.4% |
 | Third          | 44.4%    | 33.3%    | 38.9% |
 
-
- 
-Wealsosurveyed the users about their preference for implement
-ing simple and complex tasks. The simple task involves searching for keywords in tables, making sure they have a certain set of key
-words and not another. The complex task aims at finding tables that can be joined on two columns and also have columns corre
-lating to a specified target. For this purpose, we provided them an implementation via SysX and alternatives. The simple task was presented using SysX’s API, native Python, and SQL, while the complex task could only be implemented using SysX’s API and Python. For the simple task, the majority (44.4%) favor SysX closely followed by SQL (38.9%). Only 16,7% favored the native python implementation. For the complex task, this gap is even bigger as the Python implementation becomes significantly more complicated. Participants justify their choice by mentioning that SysX’s API is more flexible, concise, easy-to-understand, and robust w.r.t. errors. Summary. SysX enables users to construct custom data discov
-ery plans through a single API, eliminating the need for multiple solutions. It provides a user-friendly interface to integrate various discovery solutions into a unified framework. Experiments show that SysX achieves similar to or better performance than individu
-ally optimized counterparts, utilizing the database 45% more than baselines on average. This efficiency is because SysX moves 83.5% of discovery computations into the database, reducing data loading time by 54.5% for certain operations compared to alternatives such as MATE. For more details, we refer to the results on our GitHub.
