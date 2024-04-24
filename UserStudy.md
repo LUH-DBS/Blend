@@ -188,13 +188,7 @@ Smart indexing
 5.  Find tables that contain a correlating column to the target column, that can benefit the downstream ML model.
 
 #### Results
-| Task | Research | Industry | All   |
-|------|----------|----------|-------|
-| 1    | 33.3%    | 66.7%    | 50.0% |
-| 2    | 44.4%    | 33.3%    | 38.9% |
-| 3    | 44.4%    | 33.3%    | 38.9% |
-| 4    | 33.3%    | 22.2%    | 27.8% |
-| 5    | 44.4%    | 55.6%    | 50.0% |
+![Discovery Task Types bar chart](images/needs.svg)
 
 With regard to the prevalence of discovery task types, participants commonly selected complex tasks. The two most common tasks were discovering tables containing a set of rows and containing a correlating column to a target. According to our participant breakdown, these complex tasks are more prevalent in industry. 
 
