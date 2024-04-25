@@ -66,7 +66,7 @@ To start we asked the participants about the programming languages they are fami
 
 #### Results
 
-![Familiarity with Programming Languages bar chart](images/programming_languages.svg)
+![Familiarity with programming languages stacked bar chart](images/programming_languages_stacked.svg)
 
 The majority of participants (94.4%) are familiar with Python, followed by Java (83.3%), SQL (77.8%), and C or C++ (66.7%). Distribution of familiarity with programming languages is similar between the Research and Industry groups.
 
@@ -79,7 +79,7 @@ The majority of participants (94.4%) are familiar with Python, followed by Java 
 - 5: Very often
 
 #### Results
-[![Frequency of Data Discovery bar chart](images/frequency_data_discovery.svg)](images/frequency_data_discovery.svg)
+![Frequency of data discovery heatmap](images/frequency_data_discovery_heatmap.svg)
 
 
 ### Question 5: How do you solve your data discovery problems?
@@ -92,7 +92,8 @@ The majority of participants (94.4%) are familiar with Python, followed by Java 
 - _Other (please specify)._
 
 #### Results
-![Solving Data Discovery Problems bar chart](images/method.svg)
+
+![Method of solving data discovery problems stacked bar chart](images/method_stacked.svg)
 
 The majority of participants (77.8%) solve their data discovery problems manually, by writing scripts and visually inspecting the data. 50% of the participants use SQL queries to understand the content of the data. The Research group relies more on manual work (100%) compared to the Industry group (55.6%). The Industry group uses SQL queries more often (55.6%) compared to the Research group (44.4%).
 
@@ -104,14 +105,7 @@ The majority of participants (77.8%) solve their data discovery problems manuall
 - 4
 - 5: Very often
 #### Results
-| Frequency | Research | Industry | All   |
-|-----------|----------|----------|-------|
-| 1         | 33.3%    | 22.2%    | 27.8% |
-| 2         | 22.2%    | 33.3%    | 27.8% |
-| 3         | 44.4%    | 22.2%    | 33.3% |
-| 4         | 0.0%     | 11.1%    | 5.6%  |
-| 5         | 0.0%     | 11.1%    | 5.6%  |
-| Average   | 2.11     | 2.56     | 2.33  |
+![Single search heatmap](images/single_search_heatmap.svg)
 ### Question 7: What kind of discovery result typically satisfies the downstream application?
 #### Single-Choice
 - A single table
@@ -188,7 +182,7 @@ Smart indexing
 5.  Find tables that contain a correlating column to the target column, that can benefit the downstream ML model.
 
 #### Results
-![Discovery Task Types bar chart](images/needs.svg)
+![Discovery needs stacked bar chart](images/needs_stacked.svg)
 
 With regard to the prevalence of discovery task types, participants commonly selected complex tasks. The two most common tasks were discovering tables containing a set of rows and containing a correlating column to a target. According to our participant breakdown, these complex tasks are more prevalent in industry. 
 
@@ -213,10 +207,7 @@ Which implementation do you find favorable?
 - Second implementation
 
 #### Results
-| Implementation | Research | Industry | All   |
-|----------------|----------|----------|-------|
-| First          | 88.9%    | 88.9%    | 88.9% |
-| Second         | 11.1%    | 11.1%    | 11.1% |
+![Favorable implementation heatmap](images/implementation_q12_heatmap.svg)
 
 
 ### Question 13: Which implementation do you find favorable?
@@ -254,9 +245,4 @@ Which implementation do you find favorable?
 - Third implementation
 
 #### Results
-| Implementation | Research | Industry | All   |
-|----------------|----------|----------|-------|
-| First          | 22.2%    | 11.1%    | 16.7% |
-| Second         | 33.3%    | 55.6%    | 44.4% |
-| Third          | 44.4%    | 33.3%    | 38.9% |
-
+![Favorable implementation heatmap](images/implementation_q13_heatmap.svg)
