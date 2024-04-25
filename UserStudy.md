@@ -112,7 +112,7 @@ The majority of participants (77.8%) solve their data discovery problems manuall
 - A composition of tables
 - Both
 #### Results
-![Discovery Result venn diagram](images/satisfactory.svg)
+![Discovery Result venn diagram](images/satisfactory_x3.svg)
 
 The majority of participants (66.6%) require both a single table and a composition of tables to satisfy the downstream application. The Research group prefers compositions of tables (44.4%) compared to the Industry group (11.1%). The Industry group prefers both a single table and a composition of tables (77.8%) compared to the Research group (55.6%).
 
@@ -121,7 +121,7 @@ The majority of participants (66.6%) require both a single table and a compositi
 - Databases
 - File systems
 #### Results
-![Data Lake Location venn diagram](images/residence.svg)
+![Data Lake Location venn diagram](images/residence_x3.svg)
 
 77.8% indicated that their data lakes are managed at least
 partly via traditional DBMS; 38.9% reported to only use DBMS. It is
