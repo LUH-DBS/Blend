@@ -1,6 +1,5 @@
 from src.Operators.OperatorBase import Operator
 from abc import ABC
-from xgboost import XGBRegressor
 from pathlib import Path
 from src.DBHandler import DBHandler
 
@@ -9,8 +8,13 @@ class Seeker(Operator, ABC):
         super().__init__(k)
 
         self._cached_predicted_runtime = None
-        self.model = XGBRegressor()
-        self.model.load_model(Path(__file__).parent / f"{self.__class__.__name__}_model.json")
+        if Operator.DB.USE_ML_OPTIMIZER:
+            from xgboost import XGBRegressor
+            self.model = XGBRegressor()
+            self.model.load_model(Path(__file__).parent / f"{self.__class__.__name__}_model.json")
+        else:
+            self.model = None
+            self._cached_predicted_runtime = 1
 
     def _predict_runtime(self, columns: list, db: DBHandler) -> float:
         if self._cached_predicted_runtime is not None:

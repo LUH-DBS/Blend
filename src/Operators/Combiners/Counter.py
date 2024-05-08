@@ -2,12 +2,11 @@ from src.Operators.Combiners.CombinerBase import Combiner
 
 # Typing imports
 from src.DBHandler import DBHandler
+from src.Operators.OperatorBase import Operator
+from typing import Tuple
 
 
 class Counter(Combiner):
-    def __init__(self, k: int = 10):
-        super().__init__(k)
-
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         sql = """
         SELECT TableId FROM (

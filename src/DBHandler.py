@@ -10,6 +10,7 @@ import pickle
 
 
 class DBHandler(object):
+    USE_ML_OPTIMIZER = True
     frequency_dict = None
 
     def __init__(self) -> None:
@@ -61,12 +62,17 @@ class DBHandler(object):
         self.cursor = self.connection.cursor()
         self.index_table = config['Database']['index_table']
         if DBHandler.frequency_dict is None:
-            try:
-                print("Loading frequency dict...")
-                DBHandler.frequency_dict = pickle.load(open("freqs_dict.pkl", 'rb'))
-            except FileNotFoundError as e:
-                print("Could not load frequency dict")
-                raise e
+            if DBHandler.USE_ML_OPTIMIZER:
+                try:
+                    print("Loading frequency dict...")
+                    DBHandler.frequency_dict = pickle.load(open("freqs_dict.pkl", 'rb'))
+                except FileNotFoundError as e:
+                    print("Could not load frequency dict")
+                    raise e
+            else:
+                DBHandler.frequency_dict = {}
+                print("You are not using the ML optimizer, so the frequency dict will not be loaded. Set the USE_ML_OPTIMIZER flag to True to use it.")
+            
 
     def close(self) -> None:
         if self.cursor is not None:

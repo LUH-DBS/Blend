@@ -5,8 +5,6 @@ from src.DBHandler import DBHandler
 
 
 class Union(Combiner):
-    def __init__(self, k: int = 10):
-        super().__init__(k)
 
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         sql = """

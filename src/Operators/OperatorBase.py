@@ -6,12 +6,13 @@ from typing import List
 
 
 class Operator(ABC):
+    DB = DBHandler()
     def __init__(self, k):
         self.k = k
 
-    def run(self, db: DBHandler, additionals: str = "") -> List[int]:
-        sql = self.create_sql_query(db, additionals=additionals)
-        result = db.execute_and_fetchall(sql)
+    def run(self, additionals: str = "") -> List[int]:
+        sql = self.create_sql_query(Operator.DB, additionals=additionals)
+        result = Operator.DB.execute_and_fetchall(sql)
         return [r[0] for r in result[:self.k]]
         
     @abstractmethod

@@ -7,8 +7,8 @@ from src.DBHandler import DBHandler
 
 
 class Distinct(Combiner):
-    def __init__(self, k: int = 10):
-        super().__init__(k)
+    def __init__(self, input_: Operator, k: int = 10) -> None:
+        super().__init__(input_, k=k)
 
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         sql = """SELECT DISTINCT TableId FROM (
@@ -19,9 +19,3 @@ class Distinct(Combiner):
 
         return sql
     
-    def set_inputs(self, inputs: List[Operator]) -> None:
-        if len(inputs) != 1:
-            raise ValueError(f'Distinct combiner must have exactly one input.')
-        
-        return super().set_inputs(inputs)
-        

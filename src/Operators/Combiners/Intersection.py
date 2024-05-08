@@ -7,9 +7,6 @@ from src.DBHandler import DBHandler
 
 
 class Intersection(Combiner):
-    def __init__(self, k: int = 10):
-        super().__init__(k)
-
     def cost(self) -> int:
         # Assuming most calculations are pruned by the first input
         return min(input_.cost() for input_ in self.inputs)
@@ -28,7 +25,8 @@ class Intersection(Combiner):
         sorted_inputs = list(sorted(self.inputs, key=cmp_to_key(lazy_comparator)))
 
         for input_ in sorted_inputs[:-1]:
-            result = input_.run(db, additionals=additionals)
+            print(input_)
+            result = input_.run(additionals)
             if len(result) == 0:
                 return "SELECT TableId FROM AllTables WHERE 1=0"
             additionals += f" AND TableId IN ({db.create_sql_list_numeric(result)}) "

@@ -1,38 +1,31 @@
-from src.Plan import Plan
-from src.Operators import Terminal, Input, Combiners, Seekers
+from src.Operators import Combiners, Seekers
 # Typing imports
 import pandas as pd
 from typing import Iterable
+from src.Operators.OperatorBase import Operator
 
 
-def ComplexSearch(examples: pd.DataFrame, queries: Iterable[str], target: Iterable[float], k: int = 2) -> Plan:
-    plan = Plan()
-    inputs = Input([examples, queries])
-    plan.add('input', inputs)
-
+def ComplexSearch(examples: pd.DataFrame, queries: Iterable[str], target: Iterable[float], k: int = 2) -> Operator:
     # imputation sub-pipline
-    # examples_seeker = Seekers.MC(examples, k * 10)
-    # plan.add('imputation_example', examples_seeker, ['input'])
-    # query_seeker = Seekers.SC(queries, k * 30)
-    # plan.add('imputation_query', query_seeker, ['input'])
-    # plan.add('imputation_combiner', Combiners.Intersection(k), ['imputation_example', 'imputation_query'])
+    # imputation_example = Seekers.MC(examples, k * 10)
+    # imputation_query = Seekers.SC(queries, k * 30)
+    # imputation_combiner = Combiners.Intersection(imputation_example, imputation_query, k=k)
+
 
     # union sub-pipline
+    union_seekers = []
     for clm_name in examples.columns:
         element = Seekers.SC(examples[clm_name], k * 10)
-        plan.add('union'+clm_name, element, ['input'])
-    plan.add('union_counter', Combiners.Counter(k), ['union'+x for x in examples.columns])
+        union_seekers.append(element)
+    union_counter = Combiners.Counter(*union_seekers, k=k)
 
     # join sub_pipeline
-    element = Seekers.SC(examples[examples.columns[0]], k)
-    plan.add('join_query', element, ['input'])
+    join_query = Seekers.SC(examples[examples.columns[0]], k)
 
     # correlation sub_pipeline
-    element = Seekers.Correlation(examples[examples.columns[0]], target, k)
-    plan.add('correlation_query', element, ['input'])
+    correlation_query = Seekers.Correlation(examples[examples.columns[0]], target, k)
 
     # final combiner
-    plan.add('final_union', Combiners.Union(k*4), ['union_counter', 'join_query', 'correlation_query'])
+    final_union = Combiners.Union(union_counter, join_query, correlation_query, k=k*4)
 
-    plan.add('terminal', Terminal(), ['final_union'])
-    return plan
+    return final_union
