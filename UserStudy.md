@@ -1,4 +1,4 @@
-# User Study
+# Results of User Study (December 2023)
 We conducted a survey and obtained results from 18 participants (40% response rate) covering diverse sectors, such as health care, banking, technology, and universities. We aimed to understand preferences, needs, and challenges in data discovery and let participants choose between different implementations of simple and complex pipelines.
 
 The questionaire was divided into three sections:
@@ -12,8 +12,10 @@ Below we present the individual questions and results of the survey.
 In order to gain insight into the participants' backgrounds and the potential influence of their roles and industries on their preferences and needs in data discovery, we asked them about their area of work and roles within their organizations.
 
 ### Question 1: What type of industry (education, finance, automotive, ...) do you belong to?
-#### Results (from free text input)
-| Answer                     | Count | Area of Work  |
+#### Results (free text input)
+Based on the answers we have grouped the 18 participants into two career domains: Research indicates those involved in academia, and Industry are individuals employed in companies.
+
+| Answer                     | Count | Assigned career domain  |
 |----------------------------|-------|---------------|
 | Academia, applied projects | 1     | Research      |
 | Education                  | 6     | Research      |
@@ -25,28 +27,37 @@ In order to gain insight into the participants' backgrounds and the potential in
 | IoT                        | 1     | Industry      |
 | Software industry          | 1     | Industry      |
 
-Based on their answers we have grouped the 18 participants into two affiliations: Research indicates those involved in academia, and Industry are individuals employed in companies.
+
 
 
 ### Question 2: What is your role in the organization?
 #### Results (from free text input)
-| Research | Industry |
-|----------|----------|
-| Senior Researcher | Head of Cloud Development |
-| Research Associate | Software Developer |
-| Research Associate | Developer |
-| Researcher | Developer |
-| Researcher | Data Scientist |
-| Professor | Master Student |
-| PhD Student | Data Science Trainee |
-| PhD Student | Senior ML Engineer |
-| PhD Student | Software Engineer |
-| Research Assistant | Senior Engineer |
+| Answer (Research)       | Count    |
+|-------------------------|----------|
+| PhD Student             | 2        |
+| Professor               | 1        |
+| Research Assistant      | 1        |
+| Research Associate      | 2        |
+| Researcher              | 2        |
+| Senior Researcher       | 1        |
+
+| Answer (Industry)       | Count    |
+|-------------------------|----------|
+| Data Science Trainee    | 1        |
+| Data Scientist          | 1        |
+| Developer               | 1        |
+| Head of Cloud Development | 1      |
+| Master Student          | 1        |
+| Senior Engineer         | 1        |
+| Senior ML Engineer      | 1        |
+| Software Developer      | 1        |
+| Software Engineer       | 1        |
 
 
-The Research group includes roles such as Senior Researcher, Research Associate, Researcher, Professor, PhD Student, and Research Assistant.
 
-The Industry group includes roles such as Head of Cloud Development, Software Developer, Developer, Data Scientist, Master Student, Data Science Trainee, Senior ML Engineer, Software Engineer, and Senior Engineer.
+Participants from the research domain include roles such as Senior Researcher, Research Associate, Researcher, Professor, PhD Student, and Research Assistant.
+
+Participants from the industry domain include roles such as Head of Cloud Development, Software Developer, Developer, Data Scientist, Master Student, Data Science Trainee, Senior ML Engineer, Software Engineer, and Senior Engineer.
 
 
 ## Section 2: Data Discovery
@@ -136,15 +147,15 @@ All attendants unanimously expressed that they would use a DBMS if data discover
 ### Question 10: What kind of functionality or framework would support your discovery process?
 #### Results (from free text input)
 
-Participants provided a variety of answers to this question. Commonly mentioned features include indexing mechanisms, discovering joinable tables, and a user friendly interface.
+Participants provided a variety of answers to this question. Commonly mentioned features include indexing mechanisms ("A good index structure", "Smart indexing", "[...] ; indexing mechanisms; [...]), discovering joinable tables ("join discovery", "discoviering joinable tables", "join, [...]"), and a user friendly interface ("Simple Search and Access Process, [...]", "User friendly Interface")
 
 ### Question 11: Which of the following discovery task types are most similar to your data discovery needs?
 #### Multiple-Choice
-1.  Discover tables that contain a set of rows, e.g., <"Germany", "Berlin", "TXL">, <"France", "Paris", "CDG">
-2.  Discover tables that are joinable with the "movie_title" column
-3.  Discover tables that contain the following keywords: "Germany", "Bayern Munich", and "Manuel Neuer".
-4.  Find tables that are not only joinable with "movie_title" but also contain the "director names" in a column.
-5.  Find tables that contain a correlating column to the target column, that can benefit the downstream ML model.
+1.  __Set of rows:__ Discover tables that contain a set of rows, e.g., <"Germany", "Berlin", "TXL">, <"France", "Paris", "CDG">.
+2.  __Joinable tables:__ Discover tables that are joinable with the "movie_title" column.
+3.  __Keyword search:__ Discover tables that contain the following keywords: "Germany", "Bayern Munich", and "Manuel Neuer".
+4.  __Joinable and keywords:__ Find tables that are not only joinable with "movie_title" but also contain the "director names" in a column.
+5.  __Correlating columns:__ Find tables that contain a correlating column to the target column, that can benefit the downstream ML model.
 
 #### Results
 ![Discovery needs stacked bar chart](images/needs_stacked.svg)
@@ -152,7 +163,7 @@ Participants provided a variety of answers to this question. Commonly mentioned 
 With regard to the prevalence of discovery task types, participants commonly selected complex tasks. The two most common tasks were discovering tables containing a set of rows and containing a correlating column to a target. According to our participant breakdown, these complex tasks are more prevalent in industry. Accordingly, those participants indicated more often that their discovery needs are met by table compositions in Question 7.
 
 ## Section 3: Implementation Preferences
-We also surveyed the users about their preference for implementing simple and complex tasks. The simple task involves searching for keywords in tables, making sure they have a certain set of key words and not another. The complex task aims at finding tables that can be joined on two columns and also have columns correlating to a specified target. For this purpose, we provided them an implementation via SysX and alternatives. The simple task was presented using SysX’s API, native Python, and SQL, while the complex task could only be implemented using SysX’s API and Python.
+We also surveyed the users about their preference for implementing simple and complex tasks. The simple task involves searching for keywords in tables, making sure they have a certain set of key words and not another. The complex task aims at finding tables that can be joined on two columns and also have columns correlating to a specified target. For this purpose, we provided them an implementation via Blend and alternatives. The simple task was presented using Blend’s API, native Python, and SQL, while the complex task could only be implemented using Blend’s API and Python.
 
 ### Question 12: Which implementation do you find favorable?
 Consider a data discovery task that enables us to enrich the table at hand to increase the accuracy of the ML model in predicting the IMDB score of movies:
@@ -173,7 +184,7 @@ Which implementation do you find favorable?
 #### Results
 ![Favorable implementation heatmap](images/implementation_q12_heatmap.svg)
 
-The results indicate that for both groups of participants the overwhelming majority favors the implementation of SysX over the native Python implementation.
+The results indicate that for both groups of participants the overwhelming majority favors the implementation of Blend over the native Python implementation.
 
 
 ### Question 13: Which implementation do you find favorable?
@@ -201,8 +212,8 @@ Which implementation do you find favorable?
 #### Results
 ![Favorable implementation heatmap](images/implementation_q13_heatmap.svg)
 
-For the simple task, the majority (44.4%) favor SysX closely followed by SQL (38.9%). Only 16.7% favored the native python implementation.
+For the simple task, the majority (44.4%) favor Blend closely followed by SQL (38.9%). Only 16.7% favored the native python implementation.
 
 
 ## Summary
-SysX enables users to construct custom data discovery plans through a single API, eliminating the need for multiple solutions. It provides a user-friendly interface to integrate various discovery solutions into a unified framework.
+Blend enables users to construct custom data discovery plans through a single API, eliminating the need for multiple solutions. It provides a user-friendly interface to integrate various discovery solutions into a unified framework.
