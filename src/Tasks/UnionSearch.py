@@ -1,16 +1,15 @@
 from src.Operators import Combiners, Seekers
+from src.Plan import Plan
 
 # typing imports
 import pandas as pd
-from src.Operators.OperatorBase import Operator
 
 
-def UnionSearch(dataset: pd.DataFrame, k: int = 10) -> Operator:
-    union_elements = []
+def UnionSearch(dataset: pd.DataFrame, k: int = 10) -> Plan:
+    plan = Plan()
     for clm_name in dataset.columns:
-        element = Seekers.SC(dataset[clm_name], k * 10)
-        union_elements.append(element)
+        plan.add(clm_name, Seekers.SC(dataset[clm_name], k * 10))
 
-    counter = Combiners.Counter(*union_elements, k=k)
+    plan.add("union", Combiners.Union(k=k), inputs=dataset.columns)
 
-    return counter
+    return plan

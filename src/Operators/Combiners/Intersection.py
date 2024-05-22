@@ -24,12 +24,12 @@ class Intersection(Combiner):
         
         sorted_inputs = list(sorted(self.inputs, key=cmp_to_key(lazy_comparator)))
 
+        intersect_additionals = ""
         for input_ in sorted_inputs[:-1]:
-            print(input_)
-            result = input_.run(additionals)
+            result = input_.run(additionals + intersect_additionals)
             if len(result) == 0:
                 return "SELECT TableId FROM AllTables WHERE 1=0"
-            additionals += f" AND TableId IN ({db.create_sql_list_numeric(result)}) "
+            intersect_additionals = f" AND TableId IN ({db.create_sql_list_numeric(result)}) "     
         
         sorted_inputs[-1].k = self.k
-        return sorted_inputs[-1].create_sql_query(db, additionals=additionals)
+        return sorted_inputs[-1].create_sql_query(db, additionals=additionals + intersect_additionals)

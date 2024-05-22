@@ -1,11 +1,12 @@
-import pandas as pd
+from src.Plan import Plan
 from src.Operators.Seekers import SingleColumnOverlap
 
 # typing imports
 from typing import Iterable
-from src.Operators.OperatorBase import Operator
 
 
-def SingleColumnJoinSearch(query_values: Iterable[any], k: int = 10) -> Operator:
-    return SingleColumnOverlap(query_values, k)
+def SingleColumnJoinSearch(query_values: Iterable[any], k: int = 10) -> Plan:
+    plan = Plan()
+    plan.add("single_column_overlap", SingleColumnOverlap(query_values, k))
+    return plan
 
