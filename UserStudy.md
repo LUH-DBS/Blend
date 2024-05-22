@@ -1,4 +1,4 @@
-# Results of User Study (December 2023)
+# Results of User Study (conducted in December 2023)
 We conducted a survey and obtained results from 18 participants (40% response rate) covering diverse sectors, such as health care, banking, technology, and universities. We aimed to understand preferences, needs, and challenges in data discovery and let participants choose between different implementations of simple and complex pipelines.
 
 The questionaire was divided into three sections:
