@@ -109,6 +109,7 @@ class DBHandler(object):
         results = self.execute_and_fetchall(sql)
 
         df = pd.DataFrame(results, columns=['CellValue', 'ColumnId', 'RowId'], dtype=str)
+        df = df.drop_duplicates()
         df = df.pivot(index='RowId', columns='ColumnId', values='CellValue')
         df.index.name = None
         df.columns.name = None

@@ -13,5 +13,3 @@ while inp := input("Enter log id: "):
     print(f"Reading {choices[inp]}")
     logger.describe_log(choices[inp].stem.removesuffix(".csv"))
 
-
-

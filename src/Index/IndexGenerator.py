@@ -1,13 +1,66 @@
+def calculate_xash(token: str, hash_size: int = 128) -> int:
+    """Calculates the XASH hash of a token."""
+
+    number_of_ones = 5
+    char = [
+        " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i",
+        "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    ]
+
+    segment_size_dict = {64: 1, 128: 3, 256: 6, 512: 13}
+    segment_size = segment_size_dict[hash_size]
+
+    n_bits_for_chars = 37 * segment_size
+    length_bit_start = n_bits_for_chars
+    n_bits_for_length = hash_size - length_bit_start
+    token_size = len(token)
+
+    # - Character position encoding
+    result = 0
+    # Pick the 5 most infrequent characters
+    counts = Counter(token).items()
+    sorted_counts = sorted(counts, key=lambda char_occurances: char_occurances[::-1])
+    selected_chars = [char for char, _ in sorted_counts[:number_of_ones]]
+    # Encode the position of the 5 most infrequent characters
+    for c in selected_chars:
+        if c not in char:
+            continue
+        # Calculate the mean position of the character and set the one bit in the corresponding segment
+        indices = [i for i, ltr in enumerate(token) if ltr == c]
+        mean_index = sum(indices) / len(indices)
+        normalized_mean_index = mean_index / token_size
+        segment = max(int(normalized_mean_index * segment_size - 1e-6), 0)  # Legacy fix
+        location = char.index(c) * segment_size + segment
+        result = result | 2**location
+
+    # Rotate position encoding
+    shift_distance = (
+        length_bit_start
+        * (token_size % (hash_size - length_bit_start))
+        // (hash_size - length_bit_start)
+    )
+    left_bits = result << shift_distance
+    wrapped_bits = result >> (n_bits_for_chars - shift_distance)
+    cut_overlapping_bits = 2**n_bits_for_chars
+
+    result = (left_bits | wrapped_bits) % cut_overlapping_bits
+
+    # - Add length bit
+    length_bit = 1 << (length_bit_start + token_size % n_bits_for_length)
+    result = result | length_bit
+
+    return result
 from typing import List, Callable, Type
 
 import vertica_python as vp
+import psycopg as pg
 import pandas as pd
 import multiprocessing
 from functools import partial
 from tqdm import tqdm
 from chunk import Chunk
-from src.utils import df_to_index
 import pickle
+from collections import defaultdict, Counter
 
 process_unique_zipfile = None
 def chunk2result(callback: Callable[[pd.DataFrame], pd.DataFrame], part: any) -> pd.DataFrame:
@@ -48,7 +101,10 @@ def process_chunk(con: vp.Connection, result_table_name: str, chunk_cls: Type[Ch
                 
                 csv = result_merged_df.to_csv(index=False, header=False, escapechar='\\')
                 
-                cursor.copy(f"COPY {result_table_name} (CellValue, Tableid, ColumnId, RowId, SuperKey FORMAT 'hex', Quadrant) FROM STDIN DELIMITER ',' ENCLOSED BY '\"' ESCAPE AS '\\' NULL '' REJECTED DATA AS TABLE {result_table_name}_rejected", csv)
+                with cursor.copy("COPY " + result_table_name + "(tokenized, tableid, colid, rowid, super_key, quadrant) FROM STDIN WITH CSV ESCAPE '\\'") as copy_cursor:
+                    copy_cursor.write(csv)
+                con.commit()
+
                 item_cache.clear()
 
     
@@ -81,17 +137,17 @@ def map_chunks(con: vp.Connection,
 
     # Create table for inverted index results
     cursor = con.cursor()
-    cursor.execute(f"""
-                   CREATE TABLE IF NOT EXISTS
-                   {result_table_name}(
-                        CellValue varchar(200),
-                        TableId INT,
-                        ColumnId INT,
-                        RowId INT,
-                        SuperKey BINARY(16),
-                        Quadrant BOOLEAN
-                   );
-                   """)
+    # cursor.execute(f"""
+    #                CREATE TABLE IF NOT EXISTS
+    #                {result_table_name}(
+    #                     CellValue varchar(200),
+    #                     TableId INT,
+    #                     ColumnId INT,
+    #                     RowId INT,
+    #                     SuperKey BINARY(16),
+    #                     Quadrant BOOLEAN
+    #                );
+    #                """)
 
 
     # For all chunks calculate the results in parallel (parallelization by table file)
@@ -108,30 +164,60 @@ def map_chunks(con: vp.Connection,
             pickle.dump(chunk_to_id, f)
 
 
-from src.Index.Chunks import GitChunk, DresdenChunk
+from Chunks import GitChunk, DresdenChunk
 import configparser
 def main():
     config = configparser.ConfigParser()
     config.read('config/config.ini')
-    conn_info = dict(
+    vertica_con = pg.connect(
                 host=config['Database']['host'],
-                port=config['Database']['port'],
-                user=config['Database']['user'],
+                port=5432,
+                user="postgres",
                 password=config['Database']['password'],
-                database=config['Database']['dbname'],
-                session_label='some_label',
-                read_timeout=60000,
-                unicode_error='strict',
-                ssl=False,
-                use_prepared_statements=False
+                dbname="pdb",
             )
-    vertica_con = vp.connect(**conn_info)
+
+    
             
 
     # ------------------------ Blend ------------------------
-    map_chunks(vertica_con, 'gittables_runtime_test', GitChunk, GitChunk.get_chunk_labels(), callback=df_to_index)
+    map_chunks(vertica_con, 'gittables_1m_main_tokenized', GitChunk, GitChunk.get_chunk_labels(), callback=df_to_index)
+    
+def df_to_index(df: pd.DataFrame) -> pd.DataFrame:
+    tableid = int(df.columns.name)
+
+    numeric_cols = df.select_dtypes(include='number').columns
+    numeric_cols = [df.columns.get_loc(col) for col in numeric_cols]
+    
+    file_content = df.values
+    number_of_rows = file_content.shape[0]
+    number_of_cols = file_content.shape[1]
     
 
+    superkeys = defaultdict(int)
+    new_data = []
+    for col_counter in range(number_of_cols):
+        is_numeric_col = col_counter in numeric_cols
+        if is_numeric_col:
+            mean = df.iloc[:, col_counter].mean()
+        for row_counter in range(number_of_rows):
+            tokenized = str(file_content[row_counter][col_counter]).lower().replace('\\', '').replace('\'', '').replace('\"', '').replace('\t', '').replace('\n', '').replace('\r', '').strip()[:200]
+            if tokenized == 'nan' or tokenized == 'none':
+                tokenized = ''
+            quadrant = file_content[row_counter][col_counter] >= mean if is_numeric_col else None
+            new_data.append((tokenized, tableid, col_counter, row_counter, quadrant))
+            superkeys[row_counter] = superkeys[row_counter] | calculate_xash(str(tokenized))
+    
+
+    superkeys_as_binary = {key: f"{superkey:0128b}" for key, superkey in superkeys.items()}
+    new_data = [(x[0], x[1], x[2], x[3], superkeys_as_binary[x[3]], x[4]) for x in new_data]
+
+    return pd.DataFrame(new_data, columns=['CellValue', 'TableId', 'ColumnId', 'RowId', 'SuperKey', 'Quadrant'])
 
 if __name__ == '__main__':
     main()
+
+
+
+
+

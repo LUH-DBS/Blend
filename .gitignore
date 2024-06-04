@@ -6,6 +6,7 @@ vertica_example.ini
 postgres.ini
 logs/
 .idea/
+freqs_dict.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
