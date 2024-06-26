@@ -8,7 +8,7 @@ class Seeker(Operator, ABC):
         super().__init__(k)
 
         self._cached_predicted_runtime = None
-        if Operator.DB.USE_ML_OPTIMIZER:
+        if self.DB.USE_ML_OPTIMIZER:
             from xgboost import XGBRegressor
             self.model = XGBRegressor()
             self.model.load_model(Path(__file__).parent / f"{self.__class__.__name__}_model.json")

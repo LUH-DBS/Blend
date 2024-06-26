@@ -9,11 +9,11 @@ from src.DBHandler import DBHandler
 class Intersection(Combiner):
     def cost(self) -> int:
         # Assuming most calculations are pruned by the first input
-        return min(input_.cost() for input_ in self.inputs)
+        return min(input_.cost() for input_ in self._inputs)
     
     def ml_cost(self, db: DBHandler) -> float:
         # Assuming most calculations are pruned by the first input
-        return min(input_.ml_cost(db) for input_ in self.inputs)
+        return min(input_.ml_cost(db) for input_ in self._inputs)
     
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         def lazy_comparator(operator1, operator2):
@@ -22,7 +22,7 @@ class Intersection(Combiner):
             else:
                 return operator1.ml_cost(db) - operator2.ml_cost(db)
         
-        sorted_inputs = list(sorted(self.inputs, key=cmp_to_key(lazy_comparator)))
+        sorted_inputs = list(sorted(self._inputs, key=cmp_to_key(lazy_comparator)))
 
         intersect_additionals = ""
         for input_ in sorted_inputs[:-1]:

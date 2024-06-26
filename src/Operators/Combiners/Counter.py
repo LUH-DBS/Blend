@@ -12,10 +12,10 @@ class Counter(Combiner):
         SELECT TableId FROM (
         (
         """
-        for i, input_ in enumerate(self.inputs):
+        for i, input_ in enumerate(self._inputs):
             sql += input_.create_sql_query(db, additionals=additionals)
             sql += ")"
-            if i < len(self.inputs) - 1:
+            if i < len(self._inputs) - 1:
                 sql += " UNION ALL "
                 sql += "("
         sql += f"""

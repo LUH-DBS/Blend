@@ -11,8 +11,8 @@ class Operator(ABC):
         self.k = k
 
     def run(self, additionals: str = "") -> List[int]:
-        sql = self.create_sql_query(Operator.DB, additionals=additionals)
-        result = Operator.DB.execute_and_fetchall(sql)
+        sql = self.create_sql_query(self.DB, additionals=additionals)
+        result = self.DB.execute_and_fetchall(sql)
         return [r[0] for r in result[:self.k]]
         
     @abstractmethod

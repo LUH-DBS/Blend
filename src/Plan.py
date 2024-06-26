@@ -38,11 +38,12 @@ class Plan(object):
                     f'Please add the input operator before adding the combiner.'
                 )
             
-            operator.set_inputs(input_operators)
+            operator.set_inputs(list(input_operators))
 
 
 
         # Add the operator to the plan
+        operator.DB = self.DB
         self._operators[name] = operator
         self._terminal_candidates.add(name)
         self._terminal_candidates -= set(inputs)
@@ -60,4 +61,4 @@ class Plan(object):
         
         terminal = next(iter(self._terminal_candidates))
 
-        return terminal.run()
+        return self._operators[terminal].run()
