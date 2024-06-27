@@ -2,6 +2,7 @@ import random
 import configparser
 from pathlib import Path
 import pandas as pd
+import time
 
 # Typing imports
 from typing import List, Union, Tuple, Iterable
@@ -62,16 +63,23 @@ class DBHandler(object):
         self.cursor = self.connection.cursor()
         self.index_table = config['Database']['index_table']
         if DBHandler.frequency_dict is None:
+            print("-------- Database Configuration --------")
+            print(f"Using {dbms.capitalize()} database, with index table {config['Database']['index_table']}")
             if DBHandler.USE_ML_OPTIMIZER:
                 try:
-                    print("Loading frequency dict...")
-                    DBHandler.frequency_dict = pickle.load(open("freqs_dict.pkl", 'rb'))
+                    print("Loading frequency dict...", end="", flush=True)
+                    start = time.time()
+                    df = pd.read_csv("freqs_dict.csv")
+                    DBHandler.frequency_dict = dict(zip(df['tokenized'], df['frequency']))
+                    # DBHandler.frequency_dict = pickle.load(open("freqs_dict.pkl", 'rb'))
+                    print(f"\rFrequency dict loaded in {time.time() - start:.2f} seconds")
                 except FileNotFoundError as e:
                     print("Could not load frequency dict")
                     raise e
             else:
                 DBHandler.frequency_dict = {}
                 print("You are not using the ML optimizer, so the frequency dict will not be loaded. Set the USE_ML_OPTIMIZER flag to True to use it.")
+            print("----------------------------------------")
             
 
     def close(self) -> None:
