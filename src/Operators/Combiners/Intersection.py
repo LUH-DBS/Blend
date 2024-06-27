@@ -18,8 +18,10 @@ class Intersection(Combiner):
     def create_sql_query(self, db: DBHandler, additionals: str = "") -> str:
         def lazy_comparator(operator1, operator2):
             if operator1.cost() != operator2.cost():
+                # Rule based optimization
                 return operator1.cost() - operator2.cost()
             else:
+                # ML based optimization
                 return operator1.ml_cost(db) - operator2.ml_cost(db)
         
         sorted_inputs = list(sorted(self._inputs, key=cmp_to_key(lazy_comparator)))
